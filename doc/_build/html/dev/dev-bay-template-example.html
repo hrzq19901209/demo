@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Example Bay Template &mdash; demo 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="demo 0.0.1 documentation" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="example-bay-template">
+<h1>Example Bay Template<a class="headerlink" href="#example-bay-template" title="Permalink to this headline">¶</a></h1>
+<p>This project is an example to demonstrate the necessary pieces of a Bay
+template. There are three key pieces to a bay template:</p>
+<ol class="arabic simple">
+<li>Heat template - The Heat template that Magnum will use to generate a Bay.</li>
+<li>Template definition - Magnum&#8217;s interface for interacting with the Heat
+template.</li>
+<li>Definition Entry Point - Used to advertise the available template
+definitions.</li>
+</ol>
+<div class="section" id="the-heat-template">
+<h2>The Heat Template<a class="headerlink" href="#the-heat-template" title="Permalink to this headline">¶</a></h2>
+<p>The heat template is where most of the real work happens. The result of the
+Heat template should be a full Container Orchestration Environment.</p>
+</div>
+<div class="section" id="the-template-definition">
+<h2>The Template Definition<a class="headerlink" href="#the-template-definition" title="Permalink to this headline">¶</a></h2>
+<p>Template definitions are a mapping of Magnum object attributes and Heat
+template parameters, along with Magnum consumable template outputs. Each
+definition also denotes which Bay Types it can provide. Bay Types are how
+Magnum determines which of the enabled Template Definitions it will use for a
+given Bay.</p>
+</div>
+<div class="section" id="the-definition-entry-point">
+<h2>The Definition Entry Point<a class="headerlink" href="#the-definition-entry-point" title="Permalink to this headline">¶</a></h2>
+<p>Entry points are a standard discovery and import mechanism for Python objects.
+Each Template Definition should have an Entry Point in the
+<cite>magnum.template_definitions</cite> group. This example exposes it&#8217;s Template
+Definition as <cite>example_template = example_template:ExampleTemplate</cite> in the
+<cite>magnum.template_definitions</cite> group.</p>
+</div>
+<div class="section" id="installing-bay-templates">
+<h2>Installing Bay Templates<a class="headerlink" href="#installing-bay-templates" title="Permalink to this headline">¶</a></h2>
+<p>Because Bay Templates are basically Python projects, they can be worked with
+like any other Python project. They can be cloned from version control and
+installed or uploaded to a package index and installed via utilities such as
+pip.</p>
+<p>Enabling a template is as simple as adding it&#8217;s Entry Point to the
+<cite>enabled_definitions</cite> config option in magnum.conf.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span># Setup python environment and install Magnum
+
+$ virtualenv .venv
+$ source .venv/bin/active
+(.venv)$ git clone https://github.com/openstack/magnum.git
+(.venv)$ cd magnum
+(.venv)$ python setup.py install
+
+# List installed templates, notice default templates are enabled
+
+(.venv)$ magnum-template-manage list-templates
+Enabled Templates
+  magnum_vm_atomic_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster.yaml
+  magnum_vm_coreos_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster-coreos.yaml
+Disabled Templates
+
+# Install example template
+
+(.venv)$ cd contrib/templates/example
+(.venv)$ python setup.py install
+
+# List installed templates, notice example template is disabled
+
+(.venv)$ magnum-template-manage list-templates
+Enabled Templates
+  magnum_vm_atomic_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster.yaml
+  magnum_vm_coreos_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster-coreos.yaml
+Disabled Templates
+  example_template: /home/example/.venv/local/lib/python2.7/site-packages/ExampleTemplate-0.1-py2.7.egg/example_template/example.yaml
+
+# Enable example template by setting enabled_definitions in magnum.conf
+
+(.venv)$ sudo mkdir /etc/magnum
+(.venv)$ sudo bash -c &quot;cat &gt; /etc/magnum/magnum.conf &lt;&lt; END_CONF
+[bay]
+enabled_definitions=magnum_vm_atomic_k8s,magnum_vm_coreos_k8s,example_template
+END_CONF&quot;
+
+# List installed templates, notice example template is now enabled
+
+(.venv)$ magnum-template-manage list-templates
+Enabled Templates
+  example_template: /home/example/.venv/local/lib/python2.7/site-packages/ExampleTemplate-0.1-py2.7.egg/example_template/example.yaml
+  magnum_vm_atomic_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster.yaml
+  magnum_vm_coreos_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster-coreos.yaml
+Disabled Templates
+
+# Use --details argument to get more details about each template
+
+(.venv)$ magnum-template-manage list-templates --details
+Enabled Templates
+  example_template: /home/example/.venv/local/lib/python2.7/site-packages/ExampleTemplate-0.1-py2.7.egg/example_template/example.yaml
+     Server_Type  OS       CoE
+     vm         example  example_coe
+  magnum_vm_atomic_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster.yaml
+     Server_Type   OS             CoE
+     vm        fedora-atomic  kubernetes
+  magnum_vm_coreos_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster-coreos.yaml
+     Server_Type  OS      CoE
+     vm         coreos  kubernetes
+Disabled Templates
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Example Bay Template</a><ul>
+<li><a class="reference internal" href="#the-heat-template">The Heat Template</a></li>
+<li><a class="reference internal" href="#the-template-definition">The Template Definition</a></li>
+<li><a class="reference internal" href="#the-definition-entry-point">The Definition Entry Point</a></li>
+<li><a class="reference internal" href="#installing-bay-templates">Installing Bay Templates</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/dev/dev-bay-template-example.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, bughunter.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../_sources/dev/dev-bay-template-example.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

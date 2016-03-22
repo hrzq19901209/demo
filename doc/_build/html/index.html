@@ -1,0 +1,264 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to demo’s documentation! &mdash; demo 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="demo 0.0.1 documentation" href="#" />
+    <link rel="next" title="Developer Quick-Start" href="dev/dev-quickstart.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-demo-s-documentation">
+<h1>Welcome to demo&#8217;s documentation!<a class="headerlink" href="#welcome-to-demo-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Magnum is an OpenStack project which offers container orchestration engines
+for deploying and managing containers as first class resources in OpenStack.</p>
+<ul class="simple">
+<li><strong>Free software:</strong> under the <a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">Apache license</a></li>
+<li><strong>Source:</strong> <a class="reference external" href="http://git.openstack.org/cgit/openstack/magnum">http://git.openstack.org/cgit/openstack/magnum</a></li>
+<li><strong>Blueprints:</strong> <a class="reference external" href="https://blueprints.launchpad.net/magnum">https://blueprints.launchpad.net/magnum</a></li>
+<li><strong>Bugs:</strong> <a class="reference external" href="http://bugs.launchpad.net/magnum">http://bugs.launchpad.net/magnum</a></li>
+<li><strong>REST Client:</strong> <a class="reference external" href="http://git.openstack.org/cgit/openstack/python-magnumclient">http://git.openstack.org/cgit/openstack/python-magnumclient</a></li>
+</ul>
+</div>
+<div class="section" id="bughunter">
+<h1>BugHunter<a class="headerlink" href="#bughunter" title="Permalink to this headline">¶</a></h1>
+<p>There are several different types of objects in the magnum system:</p>
+<ul class="simple">
+<li><strong>Bay:</strong> A collection of node objects where work is scheduled</li>
+<li><strong>BayModel:</strong> An object stores template information about the bay which is
+used to create new bays consistently</li>
+<li><strong>Node:</strong> A baremetal or virtual machine where work executes</li>
+<li><strong>Pod:</strong> A collection of containers running on one physical or virtual
+machine</li>
+<li><strong>Service:</strong> An abstraction which defines a logical set of pods and a policy
+by which to access them</li>
+<li><strong>ReplicationController:</strong> An abstraction for managing a group of pods to
+ensure a specified number of resources are running</li>
+<li><strong>Container:</strong> A Docker container</li>
+</ul>
+<p>Two binaries work together to compose the magnum system.  The first binary
+(accessed by the python-magnumclient code) is the magnum-api REST server.  The
+REST server may run as one process or multiple processes.  When a REST request
+is sent to the client API, the request is sent via AMQP to the
+magnum-conductor process.  The REST server is horizontally scalable.  At this
+time, the conductor is limited to one process, but we intend to add horizontal
+scalability to the conductor as well.</p>
+<p>The magnum-conductor process runs on a controller machine and connects to a
+Kubernetes or Docker REST API endpoint.  The Kubernetes and Docker REST API
+endpoints are managed by the bay object.</p>
+<p>When service or pod objects are created, Kubernetes may be directly contacted
+via the Kubernetes REST API.  When container objects are acted upon, the
+Docker REST API may be directly contacted.</p>
+</div>
+<div class="section" id="features">
+<h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Abstractions for bays, containers, nodes, pods, replication controllers, and
+services</li>
+<li>Integration with Kubernetes and Docker for backend container technology</li>
+<li>Integration with Keystone for multi-tenant security</li>
+<li>Integration with Neutron for Kubernetes multi-tenancy network security</li>
+</ul>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s2">&quot;I love you&quot;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env pyhton</span>
+<span class="c1">#-*- coding:utf-8 -*-</span>
+<span class="k">def</span> <span class="nf">sayhello</span><span class="p">():</span>
+	<span class="k">print</span> <span class="s1">&#39;hello&#39;</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="n">sayhello</span><span class="p">()</span>
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="24%" />
+<col width="46%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">node</th>
+<th class="head">func</th>
+<th class="head">ip</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>compute1</td>
+<td>nova</td>
+<td>192.168.1.10</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils" id="id1">
+<caption><span class="caption-text">Frozen Delights!</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="27%" />
+<col width="18%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Treat</th>
+<th class="head">Quality</th>
+<th class="head">Decription</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>BugHunter</td>
+<td>100</td>
+<td>On a stick</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils" id="id2">
+<caption><span class="caption-text">Frozen Delights!</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="27%" />
+<col width="18%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Treat</th>
+<th class="head">Quality</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Albatross</td>
+<td>2.99</td>
+<td>I love you</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="test">
+<h1>Test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>列表第一集<ul>
+<li>第二级<ul>
+<li>第三级</li>
+</ul>
+</li>
+<li>第二级的另一个项目</li>
+</ul>
+</li>
+</ul>
+<p>1. 数字
+a. 小写字母
+A. 大写字母
+i) 小写罗马数字
+(I) 大写罗马数字</p>
+<p><em>I love you</em></p>
+<p><strong>I love you</strong></p>
+<p><a class="reference internal" href="dev/dev-quickstart.html#dev-quickstart"><span>buzz</span></a></p>
+</div>
+<div class="section" id="developer-info">
+<h1>Developer Info<a class="headerlink" href="#developer-info" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-quickstart.html">Developer Quick-Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-manual-devstack.html">Manually Adding Magnum to DevStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-build-atomic-image.html">Building and updating Fedora Atomic image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-kubernetes-load-balancer.html">Using Kubernetes external load balancer feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-tls.html">Transport Layer Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat-templates.html">Heat Template Definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="objects.html">Versioned Objects</a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to demo&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#bughunter">BugHunter</a></li>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#test">Test</a></li>
+<li><a class="reference internal" href="#developer-info">Developer Info</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="dev/dev-quickstart.html" title="next chapter">Developer Quick-Start</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, bughunter.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

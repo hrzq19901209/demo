@@ -1,0 +1,392 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using Kubernetes external load balancer feature &mdash; demo 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="demo 0.0.1 documentation" href="../index.html" />
+    <link rel="next" title="Transport Layer Security" href="dev-tls.html" />
+    <link rel="prev" title="Building and updating Fedora Atomic image" href="dev-build-atomic-image.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-kubernetes-external-load-balancer-feature">
+<h1>Using Kubernetes external load balancer feature<a class="headerlink" href="#using-kubernetes-external-load-balancer-feature" title="Permalink to this headline">¶</a></h1>
+<p>In a Kubernetes cluster, all masters and minions are connected to a private
+Neutron subnet, which in turn is connected by a router to the public network.
+This allows the nodes to access each other and the external internet.</p>
+<p>All Kubernetes pods and services created in the cluster are connected to a
+private container network which by default is Flannel, an overlay network that
+runs on top of the Neutron private subnet.  The pods and services are assigned
+IP addresses from this container network and they can access each other and
+the external internet.  However, these IP addresses are not accessible from an
+external network.</p>
+<p>To publish a service endpoint externally so that the service can be accessed
+from the external network, Kubernetes provides the external load balancer
+feature.  This is done by simply specifying the attribute &#8220;type: LoadBalancer&#8221;
+in the service manifest.  When the service is created, Kubernetes will add an
+external load balancer in front of the service so that the service will have
+an external IP address in addition to the internal IP address on the container
+network.  The service endpoint can then be accessed with this external IP
+address.  Refer to the Kubernetes guide for more details:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>http://kubernetes.io/v1.0/docs/user-guide/services.html#external-services
+</pre></div>
+</div>
+<p>A Kubernetes cluster deployed by Magnum will have all the necessary
+configuration required for the external load balancer.  This document describes
+how to use this feature.</p>
+<div class="section" id="steps-for-the-cluster-administrator">
+<h2>Steps for the cluster administrator<a class="headerlink" href="#steps-for-the-cluster-administrator" title="Permalink to this headline">¶</a></h2>
+<p>Because the Kubernetes master needs to interface with OpenStack to create and
+manage the Neutron load balancer, we need to provide a credential for
+Kubernetes to use.</p>
+<p>In the current implementation, the cluster administrator needs to manually
+perform this step.  We are looking into several ways to let Magnum automate
+this step in a secure manner.  This means that after the Kubernetes cluster is
+initially deployed, the load balancer support is disabled.  If the
+administrator does not want to enable this feature, no further action is
+required.  All the services will be created normally; services that specify the
+load balancer will also be created successfully, but a load balancer will not
+be created.</p>
+<p>To enable the load balancer, log into each master node of your bay and
+perform the following steps:</p>
+<ol class="arabic">
+<li><p class="first">Configure kube-apiserver:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo vi /etc/kubernetes/apiserver
+</pre></div>
+</div>
+<p>Comment out the line:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">#KUBE_API_ARGS=&quot;--runtime_config=api/all=true&quot;</span>
+</pre></div>
+</div>
+<p>Uncomment the line:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">KUBE_API_ARGS</span><span class="o">=</span><span class="s2">&quot;--runtime_config=api/all=true --cloud_config=/etc/sysconfig/kube_openstack_config --cloud_provider=openstack&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Configure kube-controller-manager:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo vi /etc/kubernetes/controller-manager
+</pre></div>
+</div>
+<p>Uncomment the line:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">KUBE_CONTROLLER_MANAGER_ARGS</span><span class="o">=</span><span class="s2">&quot;--cloud_config=/etc/sysconfig/kube_openstack_config --cloud_provider=openstack&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Enter OpenStack user credential:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo vi /etc/sysconfig/kube_openstack_config
+</pre></div>
+</div>
+<p>The username and tenant-name entries have been filled in with the
+Keystone values of the user who created the bay.  Enter the password
+of this user on the entry for password:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">password</span><span class="o">=</span><span class="n">ChangeMe</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Restart Kubernetes services:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo service kube-apiserver restart
+sudo service kube-controller-manager restart
+service kube-apiserver status
+service kube-controller-manager status
+</pre></div>
+</div>
+</li>
+</ol>
+<p>This only needs to be done once.  The steps can be reversed to disable the
+load balancer feature. Before deleting the Kubernetes cluster, make sure to
+delete all the services that created load balancers. Because the Neutron
+objects created by Kubernetes are not managed by Heat, they will not be
+deleted by Heat and this will cause the bay-delete operation to fail. If this
+occurs, delete the neutron objects manually (lb-pool, lb-vip, lb-member,
+lb-healthmonitor) and then run bay-delete again.</p>
+</div>
+<div class="section" id="steps-for-the-users">
+<h2>Steps for the users<a class="headerlink" href="#steps-for-the-users" title="Permalink to this headline">¶</a></h2>
+<p>For the user, publishing the service endpoint externally involves the following
+2 steps:</p>
+<ol class="arabic simple">
+<li>Specify &#8220;type: LoadBalancer&#8221; in the service manifest</li>
+<li>After the service is created, associate a floating IP with the VIP of the
+load balancer pool.</li>
+</ol>
+<p>The following example illustrates how to create an external endpoint for
+a pod running nginx.</p>
+<p>Create a file (e.g nginx.yaml) describing a pod running nginx:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+   app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    ports:
+    - containerPort: 80
+</pre></div>
+</div>
+<p>Create a file (e.g nginx-service.yaml) describing a service for the nginx pod:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>apiVersion: v1
+kind: Service
+metadata:
+  name: nginxservice
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: nginx
+  type: LoadBalancer
+</pre></div>
+</div>
+<p>Assuming that a Kubernetes bay named k8sbayv1 has been created, deploy the pod
+and service by the commands:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum pod-create --manifest nginx.yaml --bay k8sbayv1
+
+magnum coe-service-create --manifest nginx-service.yaml --bay k8sbayv1
+</pre></div>
+</div>
+<p>For more details on verifying the load balancer in OpenStack, refer to the
+following section on how it works.</p>
+<p>Next, associate a floating IP to the load balancer.  This can be done easily
+on Horizon by navigating to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>Compute -&gt; Access &amp; Security -&gt; Floating IPs
+</pre></div>
+</div>
+<p>Click on &#8220;Allocate IP To Project&#8221; and then on &#8220;Associate&#8221; for the new floating
+IP.</p>
+<p>Alternatively, associating a floating IP can be done on the command line by
+allocating a floating IP, finding the port of the VIP, and associating the
+floating IP to the port.
+The commands shown below are for illustration purpose and assume
+that there is only one service with load balancer running in the bay and
+no other load balancers exist except for those created for the cluster.</p>
+<p>First create a floating IP on the public network:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>neutron floatingip-create public
+
+Created a new floatingip:
+
++---------------------+--------------------------------------+
+| Field               | Value                                |
++---------------------+--------------------------------------+
+| fixed_ip_address    |                                      |
+| floating_ip_address | 172.24.4.78                          |
+| floating_network_id | 4808eacb-e1a0-40aa-97b6-ecb745af2a4d |
+| id                  | b170eb7a-41d0-4c00-9207-18ad1c30fecf |
+| port_id             |                                      |
+| router_id           |                                      |
+| status              | DOWN                                 |
+| tenant_id           | 012722667dc64de6bf161556f49b8a62     |
++---------------------+--------------------------------------+
+</pre></div>
+</div>
+<p>Note the floating IP 172.24.4.78 that has been allocated.  The ID for this
+floating IP is shown above, but it can also be queried by:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>FLOATING_ID=$(neutron floatingip-list | grep &quot;172.24.4.78&quot; | awk &#39;{print $2}&#39;)
+</pre></div>
+</div>
+<p>Next find the VIP for the load balancer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>VIP_ID=$(neutron lb-vip-list | grep TCP | grep -v pool | awk &#39;{print $2}&#39;)
+</pre></div>
+</div>
+<p>Find the port for this VIP:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>PORT_ID=$(neutron lb-vip-show $VIP_ID | grep port_id | awk &#39;{print $4}&#39;)
+</pre></div>
+</div>
+<p>Finally associate the floating IP with the port of the VIP:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>neutron floatingip-associate $FLOATING_ID $PORT_ID
+</pre></div>
+</div>
+<p>The endpoint for nginx can now be accessed at this floating IP:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>http://172.24.4.78:80
+</pre></div>
+</div>
+<p>NOTE: it is not necessary to indicate port :80 here but it is shown to
+correlate with the port that was specified in the service manifest.</p>
+</div>
+<div class="section" id="how-it-works">
+<h2>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h2>
+<p>Kubernetes is designed to work with different Clouds such as Google Compute
+Engine (GCE), Amazon Web Services (AWS), and OpenStack;  therefore, different
+load balancers need to be created on the particular Cloud for the services.
+This is done through a plugin for each Cloud and the OpenStack plugin was
+developed by Angus Lees:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>https://github.com/kubernetes/kubernetes/blob/release-1.0/pkg/cloudprovider/openstack/openstack.go
+</pre></div>
+</div>
+<p>When the Kubernetes components kube-apiserver and kube-controller-manager start
+up, they will use the credential provided to authenticate a client
+to interface with OpenStack.</p>
+<p>When a service with load balancer is created, the plugin code will interface
+with Neutron in this sequence:</p>
+<ol class="arabic simple">
+<li>Create lb-pool for the Kubernetes service</li>
+<li>Create lb-member for the minions</li>
+<li>Create lb-healthmonitor</li>
+<li>Create lb-vip on the private network of the Kubernetes cluster</li>
+</ol>
+<p>These Neutron objects can be verified as follows.  For the load balancer pool:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>neutron lb-pool-list
++--------------------------------------+----------------------------------------------+----------+-------------+----------+----------------+--------+
+| id                                   | name                                         | provider | lb_method   | protocol | admin_state_up | status |
++--------------------------------------+----------------------------------------------+----------+-------------+----------+----------------+--------+
+| 241357b3-2a8f-442e-b534-bde7cd6ba7e4 | a1f03e40f634011e59c9efa163eae8ab             | haproxy  | ROUND_ROBIN | TCP      | True           | ACTIVE |
+| 82b39251-1455-4eb6-a81e-802b54c2df29 | k8sbayv1-iypacicrskib-api_pool-fydshw7uvr7h  | haproxy  | ROUND_ROBIN | HTTP     | True           | ACTIVE |
+| e59ea983-c6e8-4cec-975d-89ade6b59e50 | k8sbayv1-iypacicrskib-etcd_pool-qbpo43ew2m3x | haproxy  | ROUND_ROBIN | HTTP     | True           | ACTIVE |
++--------------------------------------+----------------------------------------------+----------+-------------+----------+----------------+--------+
+</pre></div>
+</div>
+<p>Note that 2 load balancers already exist to implement high availability for the
+cluster (api and ectd). The new load balancer for the Kubernetes service uses
+the TCP protocol and has a name assigned by Kubernetes.</p>
+<p>For the members of the pool:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>neutron lb-member-list
++--------------------------------------+----------+---------------+--------+----------------+--------+
+| id                                   | address  | protocol_port | weight | admin_state_up | status |
++--------------------------------------+----------+---------------+--------+----------------+--------+
+| 9ab7dcd7-6e10-4d9f-ba66-861f4d4d627c | 10.0.0.5 |          8080 |      1 | True           | ACTIVE |
+| b179c1ad-456d-44b2-bf83-9cdc127c2b27 | 10.0.0.5 |          2379 |      1 | True           | ACTIVE |
+| f222b60e-e4a9-4767-bc44-ffa66ec22afe | 10.0.0.6 |         31157 |      1 | True           | ACTIVE |
++--------------------------------------+----------+---------------+--------+----------------+--------+
+</pre></div>
+</div>
+<p>Again, 2 members already exist for high availability and they serve the master
+node at 10.0.0.5. The new member serves the minion at 10.0.0.6, which hosts the
+Kubernetes service.</p>
+<p>For the monitor of the pool:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>neutron lb-healthmonitor-list
++--------------------------------------+------+----------------+
+| id                                   | type | admin_state_up |
++--------------------------------------+------+----------------+
+| 381d3d35-7912-40da-9dc9-b2322d5dda47 | TCP  | True           |
+| 67f2ae8f-ffc6-4f86-ba5f-1a135f4af85c | TCP  | True           |
+| d55ff0f3-9149-44e7-9b52-2e055c27d1d3 | TCP  | True           |
++--------------------------------------+------+----------------+
+</pre></div>
+</div>
+<p>For the VIP of the pool:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>neutron lb-vip-list
++--------------------------------------+----------------------------------+----------+----------+----------------+--------+
+| id                                   | name                             | address  | protocol | admin_state_up | status |
++--------------------------------------+----------------------------------+----------+----------+----------------+--------+
+| 9ae2ebfb-b409-4167-9583-4a3588d2ff42 | api_pool.vip                     | 10.0.0.3 | HTTP     | True           | ACTIVE |
+| c318aec6-8b7b-485c-a419-1285a7561152 | a1f03e40f634011e59c9efa163eae8ab | 10.0.0.7 | TCP      | True           | ACTIVE |
+| fc62cf40-46ad-47bd-aa1e-48339b95b011 | etcd_pool.vip                    | 10.0.0.4 | HTTP     | True           | ACTIVE |
++--------------------------------------+----------------------------------+----------+----------+----------------+--------+
+</pre></div>
+</div>
+<p>Note that the VIP is created on the private network of the cluster;  therefore
+it has an internal IP address of 10.0.0.7.  This address is also associated as
+the &#8220;external address&#8221; of the Kubernetes service.  You can verify in Kubernetes
+by running the kubectl command:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>kubectl get services
+NAME           LABELS                                    SELECTOR    IP(S)            PORT(S)
+kubernetes     component=apiserver,provider=kubernetes   &lt;none&gt;      10.254.0.1       443/TCP
+nginxservice   app=nginx                                 app=nginx   10.254.122.191   80/TCP
+                                                                     10.0.0.7
+</pre></div>
+</div>
+<p>On GCE, the networking implementation gives the load balancer an external
+address automatically. On OpenStack, we need to take the additional step of
+associating a floating IP to the load balancer.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Using Kubernetes external load balancer feature</a><ul>
+<li><a class="reference internal" href="#steps-for-the-cluster-administrator">Steps for the cluster administrator</a></li>
+<li><a class="reference internal" href="#steps-for-the-users">Steps for the users</a></li>
+<li><a class="reference internal" href="#how-it-works">How it works</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="dev-build-atomic-image.html" title="previous chapter">Building and updating Fedora Atomic image</a></li>
+      <li>Next: <a href="dev-tls.html" title="next chapter">Transport Layer Security</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/dev/dev-kubernetes-load-balancer.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, bughunter.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../_sources/dev/dev-kubernetes-load-balancer.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

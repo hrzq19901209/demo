@@ -1,0 +1,637 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Developer Quick-Start &mdash; demo 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="demo 0.0.1 documentation" href="../index.html" />
+    <link rel="next" title="Manually Adding Magnum to DevStack" href="dev-manual-devstack.html" />
+    <link rel="prev" title="Welcome to demo’s documentation!" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="developer-quick-start">
+<span id="dev-quickstart"></span><h1>Developer Quick-Start<a class="headerlink" href="#developer-quick-start" title="Permalink to this headline">¶</a></h1>
+<p>This is a quick walkthrough to get you started developing code for magnum.
+This assumes you are already familiar with submitting code reviews to an
+OpenStack project.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="http://docs.openstack.org/infra/manual/developers.html">http://docs.openstack.org/infra/manual/developers.html</a></p>
+</div>
+<p>test:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">test</span>
+</pre></div>
+</div>
+<div class="section" id="setup-dev-environment">
+<h2>Setup Dev Environment<a class="headerlink" href="#setup-dev-environment" title="Permalink to this headline">¶</a></h2>
+<p>Install OS-specific prerequisites:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span># Ubuntu/Debian:
+sudo apt-get update
+sudo apt-get install -y python-dev libssl-dev libxml2-dev \
+                        libmysqlclient-dev libxslt-dev libpq-dev git \
+                        libffi-dev gettext build-essential
+
+# Fedora/RHEL:
+sudo yum install -y python-devel openssl-devel mysql-devel \
+                    libxml2-devel libxslt-devel postgresql-devel git \
+                    libffi-devel gettext gcc
+
+# openSUSE/SLE 12:
+sudo zypper --non-interactive install git libffi-devel \
+                    libmysqlclient-devel libopenssl-devel libxml2-devel \
+                    libxslt-devel postgresql-devel python-devel \
+                    gettext-runtime
+</pre></div>
+</div>
+<p>Install pip:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>curl -s https://bootstrap.pypa.io/get-pip.py | sudo python
+</pre></div>
+</div>
+<p>Install common prerequisites:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo pip install virtualenv flake8 tox testrepository git-review
+</pre></div>
+</div>
+<p>You may need to explicitly upgrade virtualenv if you&#8217;ve installed the one
+from your OS distribution and it is too old (tox will complain). You can
+upgrade it individually, if you need to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo pip install -U virtualenv
+</pre></div>
+</div>
+<p>Magnum source code should be pulled directly from git:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span># from your home or source directory
+cd ~
+git clone https://git.openstack.org/openstack/magnum
+cd magnum
+</pre></div>
+</div>
+<p>All unit tests should be run using tox. To run magnum&#8217;s entire test suite:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># run all tests (unit and pep8)</span>
+<span class="n">tox</span>
+</pre></div>
+</div>
+<p>To run a specific test, use a positional argument for the unit tests:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># run a specific test for Python 2.7</span>
+<span class="n">tox</span> <span class="o">-</span><span class="n">epy27</span> <span class="o">--</span> <span class="n">test_conductor</span>
+</pre></div>
+</div>
+<p>You may pass options to the test programs using positional arguments:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># run all the Python 2.7 unit tests (in parallel!)</span>
+<span class="n">tox</span> <span class="o">-</span><span class="n">epy27</span> <span class="o">--</span> <span class="o">--</span><span class="n">parallel</span>
+</pre></div>
+</div>
+<p>To run only the pep8/flake8 syntax and style checks:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">tox</span> <span class="o">-</span><span class="n">epep8</span>
+</pre></div>
+</div>
+<p>To discover and interact with templates, please refer to
+<a class="reference external" href="http://docs.openstack.org/developer/magnum/dev/dev-bay-template-example.html">http://docs.openstack.org/developer/magnum/dev/dev-bay-template-example.html</a></p>
+</div>
+<div class="section" id="exercising-the-services-using-devstack">
+<h2>Exercising the Services Using Devstack<a class="headerlink" href="#exercising-the-services-using-devstack" title="Permalink to this headline">¶</a></h2>
+<p>Devstack can be configured to enable magnum support. It is easy to develop
+magnum with the devstack environment. Magnum depends on nova, glance, heat and
+neutron to create and schedule virtual machines to simulate bare-metal (full
+bare-metal support is under active development).</p>
+<p>Note: Running devstack within a virtual machine with magnum enabled is not
+recommended at this time.</p>
+<p>This session has only been tested on Ubuntu 14.04 (Trusty) and Fedora 20/21.
+We recommend users to select one of them if it is possible.</p>
+<p>For in-depth guidance on adding magnum manually to a devstack instance, please
+refer to the <a class="reference external" href="http://docs.openstack.org/developer/magnum/dev/dev-manual-devstack.html">http://docs.openstack.org/developer/magnum/dev/dev-manual-devstack.html</a></p>
+<p>Clone devstack:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span># Create a root directory for devstack if needed
+sudo mkdir -p /opt/stack
+sudo chown $USER /opt/stack
+
+git clone https://git.openstack.org/openstack-dev/devstack /opt/stack/devstack
+</pre></div>
+</div>
+<p>We will run devstack with minimal local.conf settings required to enable
+magnum, heat, and neutron (neutron is enabled by default in devstack since
+Kilo, and heat is enabled by the magnum plugin):</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cat &gt; /opt/stack/devstack/local.conf &lt;&lt; END
+[[local|localrc]]
+DATABASE_PASSWORD=password
+RABBIT_PASSWORD=password
+SERVICE_TOKEN=password
+SERVICE_PASSWORD=password
+ADMIN_PASSWORD=password
+# magnum requires the following to be set correctly
+PUBLIC_INTERFACE=eth1
+enable_plugin magnum https://git.openstack.org/openstack/magnum
+# Enable barbican service and use it to store TLS certificates
+# For details http://docs.openstack.org/developer/magnum/dev/dev-tls.html
+enable_plugin barbican https://git.openstack.org/openstack/barbican
+VOLUME_BACKING_FILE_SIZE=20G
+END
+</pre></div>
+</div>
+<p>Note: Update PUBLIC_INTERFACE as appropriate for your system.</p>
+<p>Optionally, you can enable ceilometer in devstack. If ceilometer is enabled,
+magnum will periodically send metrics to ceilometer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cat &gt;&gt; /opt/stack/devstack/local.conf &lt;&lt; END
+enable_plugin ceilometer https://git.openstack.org/openstack/ceilometer
+END
+</pre></div>
+</div>
+<p>More devstack configuration information can be found at
+<a class="reference external" href="http://docs.openstack.org/developer/devstack/configuration.html">http://docs.openstack.org/developer/devstack/configuration.html</a></p>
+<p>More neutron configuration information can be found at
+<a class="reference external" href="http://docs.openstack.org/developer/devstack/guides/neutron.html">http://docs.openstack.org/developer/devstack/guides/neutron.html</a></p>
+<p>Run devstack:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cd /opt/stack/devstack
+./stack.sh
+</pre></div>
+</div>
+<p>Note: This will take a little extra time when the Fedora Atomic micro-OS
+image is downloaded for the first time.</p>
+<p>At this point, two magnum process (magnum-api and magnum-conductor) will be
+running on devstack screens. If you make some code changes and want to
+test their effects, just stop and restart magnum-api and/or magnum-conductor.</p>
+<p>Prepare your session to be able to use the various openstack clients including
+magnum, neutron, and glance. Create a new shell, and source the devstack openrc
+script:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>source /opt/stack/devstack/openrc admin admin
+</pre></div>
+</div>
+<p>Magnum has been tested with the Fedora Atomic micro-OS and CoreOS. Magnum will
+likely work with other micro-OS platforms, but each requires individual
+support in the heat template.</p>
+<p>The Fedora Atomic micro-OS image will automatically be added to glance.  You
+can add additional images manually through glance. To verify the image created
+when installing devstack use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>glance -v image-list
+
++--------------------------------------+---------------------------------+-------------+------------------+-----------+--------+
+| ID                                   | Name                            | Disk Format | Container Format | Size      | Status |
++--------------------------------------+---------------------------------+-------------+------------------+-----------+--------+
+| 7f5b6a15-f2fd-4552-aec5-952c6f6d4bc7 | cirros-0.3.4-x86_64-uec         | ami         | ami              | 25165824  | active |
+| bd3c0f92-669a-4390-a97d-b3e0a2043362 | cirros-0.3.4-x86_64-uec-kernel  | aki         | aki              | 4979632   | active |
+| 843ce0f7-ae51-4db3-8e74-bcb860d06c55 | cirros-0.3.4-x86_64-uec-ramdisk | ari         | ari              | 3740163   | active |
+| 02c312e3-2d30-43fd-ab2d-1d25622c0eaa | fedora-21-atomic-5              | qcow2       | bare             | 770179072 | active |
++--------------------------------------+---------------------------------+-------------+------------------+-----------+--------+
+</pre></div>
+</div>
+<p>To list the available commands and resources for magnum, use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum help
+</pre></div>
+</div>
+<p>To list out the health of the internal services, namely conductor, of magnum, use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum service-list
+
++----+------------------------------------+------------------+-------+
+| id | host                               | binary           | state |
++----+------------------------------------+------------------+-------+
+| 1  | oxy-dev.hq1-0a5a3c02.hq1.abcde.com | magnum-conductor | up    |
++----+------------------------------------+------------------+-------+
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-a-kubernetes-bay">
+<h2>Building a Kubernetes Bay<a class="headerlink" href="#building-a-kubernetes-bay" title="Permalink to this headline">¶</a></h2>
+<p>Create a keypair for use with the baymodel:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>test -f ~/.ssh/id_rsa.pub || ssh-keygen -t rsa -N &quot;&quot; -f ~/.ssh/id_rsa
+nova keypair-add --pub-key ~/.ssh/id_rsa.pub testkey
+</pre></div>
+</div>
+<p>Create a baymodel. This is similar in nature to a flavor and describes
+to magnum how to construct the bay. The coe (Container Orchestration Engine)
+and keypair need to be specified for the baymodel:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum baymodel-create --name k8sbaymodel \
+                       --image-id fedora-21-atomic-5 \
+                       --keypair-id testkey \
+                       --external-network-id public \
+                       --dns-nameserver 8.8.8.8 \
+                       --flavor-id m1.small \
+                       --docker-volume-size 5 \
+                       --network-driver flannel \
+                       --coe kubernetes
+</pre></div>
+</div>
+<p>Create a bay. Use the baymodel name as a template for bay creation.
+This bay will result in one master kubernetes node and one minion node:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-create --name k8sbay --baymodel k8sbaymodel --node-count 1
+</pre></div>
+</div>
+<p>Bays will have an initial status of CREATE_IN_PROGRESS.  Magnum will update
+the status to CREATE_COMPLETE when it is done creating the bay.  Do not create
+containers, pods, services, or replication controllers before magnum finishes
+creating the bay. They will likely not be created, and may cause magnum to
+become confused.</p>
+<p>The existing bays can be listed as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-list
+
++--------------------------------------+---------+------------+-----------------+
+| uuid                                 | name    | node_count | status          |
++--------------------------------------+---------+------------+-----------------+
+| 9dccb1e6-02dc-4e2b-b897-10656c5339ce | k8sbay  | 1          | CREATE_COMPLETE |
++--------------------------------------+---------+------------+-----------------+
+</pre></div>
+</div>
+<p>More detailed information for a given bay is obtained via:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-show k8sbay
+</pre></div>
+</div>
+<p>After a bay is created, you can dynamically add/remove node(s) to/from the bay
+by updating the node_count attribute. For example, to add one more node:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-update k8sbay replace node_count=2
+</pre></div>
+</div>
+<p>Bays in the process of updating will have a status of UPDATE_IN_PROGRESS.
+Magnum will update the status to UPDATE_COMPLETE when it is done updating
+the bay.</p>
+<p>Note: Reducing node_count will remove all the existing pods on the nodes that
+are deleted. If you choose to reduce the node_count, magnum will first try to
+remove empty nodes with no pods running on them. If you reduce node_count by
+more than the number of empty nodes, magnum must remove nodes that have running
+pods on them. This action will delete those pods. We strongly recommend using a
+replication controller before reducing the node_count so any removed pods can
+be automatically recovered on your remaining nodes.</p>
+<p>Heat can be used to see detailed information on the status of a stack or
+specific bay:</p>
+<p>To check the list of all bay stacks:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>heat stack-list
+</pre></div>
+</div>
+<p>To check an individual bay&#8217;s stack:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>heat stack-show &lt;stack-name or stack_id&gt;
+</pre></div>
+</div>
+<p>Monitoring bay status in detail (e.g., creating, updating):</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>BAY_HEAT_NAME=$(heat stack-list | awk &quot;/\sk8sbay-/{print \$4}&quot;)
+echo ${BAY_HEAT_NAME}
+heat resource-list ${BAY_HEAT_NAME}
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-kubernetes-bay">
+<h2>Using Kubernetes Bay<a class="headerlink" href="#using-kubernetes-bay" title="Permalink to this headline">¶</a></h2>
+<p>Note: For the following examples, only one minion node is required in the
+k8s bay created previously.</p>
+<p>Kubernetes provides a number of examples you can use to check that things are
+working. You may need to clone kubernetes using:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>wget https://github.com/kubernetes/kubernetes/releases/download/v1.0.1/kubernetes.tar.gz
+tar -xvzf kubernetes.tar.gz
+</pre></div>
+</div>
+<p>Note: We do not need to install Kubernetes, we just need the example file
+from the tarball.</p>
+<p>Here&#8217;s how to set up the replicated redis example. First, create
+a pod for the redis-master:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cd kubernetes/examples/redis
+magnum pod-create --manifest ./redis-master.yaml --bay k8sbay
+</pre></div>
+</div>
+<p>Now create a service to provide a discoverable endpoint for the redis
+sentinels in the cluster:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum coe-service-create --manifest ./redis-sentinel-service.yaml --bay k8sbay
+</pre></div>
+</div>
+<p>To make it a replicated redis cluster create replication controllers for the
+redis slaves and sentinels:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sed -i &#39;s/\(replicas: \)1/\1 2/&#39; redis-controller.yaml
+magnum rc-create --manifest ./redis-controller.yaml --bay k8sbay
+
+sed -i &#39;s/\(replicas: \)1/\1 2/&#39; redis-sentinel-controller.yaml
+magnum rc-create --manifest ./redis-sentinel-controller.yaml --bay k8sbay
+</pre></div>
+</div>
+<p>Full lifecycle and introspection operations for each object are supported.
+For example, magnum bay-create, magnum baymodel-delete, magnum rc-show,
+magnum coe-service-list.</p>
+<p>Now there are four redis instances (one master and three slaves) running
+across the bay, replicating data between one another.</p>
+<p>Run the bay-show command to get the IP of the bay host on which the
+redis-master is running:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-show k8sbay
+
++--------------------+------------------------------------------------------------+
+| Property           | Value                                                      |
++--------------------+------------------------------------------------------------+
+| status             | CREATE_COMPLETE                                            |
+| uuid               | 481685d2-bc16-4daf-9aac-9e830c7da3f7                       |
+| status_reason      | Stack CREATE completed successfully                        |
+| created_at         | 2015-09-22T20:02:39+00:00                                  |
+| updated_at         | 2015-09-22T20:05:00+00:00                                  |
+| bay_create_timeout | 0                                                          |
+| api_address        | 192.168.19.84:8080                                         |
+| baymodel_id        | 194a4b7e-0125-4956-8660-7551469ae1ed                       |
+| node_count         | 1                                                          |
+| node_addresses     | [u&#39;192.168.19.86&#39;]                                         |
+| master_count       | 1                                                          |
+| discovery_url      | https://discovery.etcd.io/373452625d4f52263904584b9d3616b1 |
+| name               | k8sbay                                                     |
++--------------------+------------------------------------------------------------+
+</pre></div>
+</div>
+<p>The output here indicates the redis-master is running on the bay host with IP
+address 192.168.19.86. To access the redis master:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ssh minion@192.168.19.86
+REDIS_ID=$(sudo docker ps | grep redis:v1 | grep k8s_master | awk &#39;{print $1}&#39;)
+sudo docker exec -i -t $REDIS_ID redis-cli
+
+127.0.0.1:6379&gt; set replication:test true
+OK
+^D
+
+exit  # Log out of the host
+</pre></div>
+</div>
+<p>Log into one of the other container hosts and access a redis slave from it.
+You can use <cite>nova list</cite> to enumerate the kube-minions. For this example we
+will use the same host as above:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>ssh minion@192.168.19.86
+REDIS_ID=$(sudo docker ps | grep redis:v1 | grep k8s_redis | awk &#39;{print $1}&#39;)
+sudo docker exec -i -t $REDIS_ID redis-cli
+
+127.0.0.1:6379&gt; get replication:test
+&quot;true&quot;
+^D
+
+exit  # Log out of the host
+</pre></div>
+</div>
+<p>Additional useful commands from a given minion:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo docker ps  # View Docker containers on this minion
+kubectl get po  # Get pods
+kubectl get rc  # Get replication controllers
+kubectl get svc  # Get services
+kubectl get nodes  # Get nodes
+</pre></div>
+</div>
+<p>After you finish using the bay, you want to delete it. A bay can be deleted as
+follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-delete k8sbay
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-and-using-a-swarm-bay">
+<h2>Building and Using a Swarm Bay<a class="headerlink" href="#building-and-using-a-swarm-bay" title="Permalink to this headline">¶</a></h2>
+<p>Create a baymodel. It is very similar to the Kubernetes baymodel, except for
+the absence of some Kubernetes-specific arguments and the use of &#8216;swarm&#8217;
+as the coe:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum baymodel-create --name swarmbaymodel \
+                       --image-id fedora-21-atomic-5 \
+                       --keypair-id testkey \
+                       --external-network-id public \
+                       --dns-nameserver 8.8.8.8 \
+                       --flavor-id m1.small \
+                       --coe swarm
+</pre></div>
+</div>
+<p>Note: If you are using Magnum behind a firewall then see:</p>
+<p id="using-magnum-behind-firewall"><a class="reference external" href="http://docs.openstack.org/developer/magnum/magnum-proxy.html">http://docs.openstack.org/developer/magnum/magnum-proxy.html</a></p>
+<p>Finally, create the bay. Use the baymodel &#8216;swarmbaymodel&#8217; as a template for
+bay creation. This bay will result in one swarm manager node and two extra
+agent nodes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-create --name swarmbay --baymodel swarmbaymodel --node-count 2
+</pre></div>
+</div>
+<p>Now that we have a swarm bay we can start interacting with it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-show swarmbay
+
++---------------+------------------------------------------+
+| Property      | Value                                    |
++---------------+------------------------------------------+
+| status        | CREATE_COMPLETE                          |
+| uuid          | eda91c1e-6103-45d4-ab09-3f316310fa8e     |
+| created_at    | 2015-04-20T19:05:27+00:00                |
+| updated_at    | 2015-04-20T19:06:08+00:00                |
+| baymodel_id   | a93ee8bd-fec9-4ea7-ac65-c66c1dba60af     |
+| node_count    | 2                                        |
+| discovery_url |                                          |
+| name          | swarmbay                                 |
++---------------+------------------------------------------+
+</pre></div>
+</div>
+<p>Next we will create a container in this bay. This container will ping the
+address 8.8.8.8 four times:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum container-create --name test-container \
+                        --image docker.io/cirros:latest \
+                        --bay swarmbay \
+                        --command &quot;ping -c 4 8.8.8.8&quot;
+
++------------+----------------------------------------+
+| Property   | Value                                  |
++------------+----------------------------------------+
+| uuid       | 25485358-ae9b-49d1-a1e1-1af0a7c3f911   |
+| links      | ...                                    |
+| bay_uuid   | eda91c1e-6103-45d4-ab09-3f316310fa8e   |
+| updated_at | None                                   |
+| image      | cirros                                 |
+| command    | ping -c 4 8.8.8.8                      |
+| created_at | 2015-04-22T20:21:11+00:00              |
+| name       | test-container                         |
++------------+----------------------------------------+
+</pre></div>
+</div>
+<p>At this point the container exists but it has not been started yet. To start
+it and check its output run the following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum container-start test-container
+magnum container-logs test-container
+
+PING 8.8.8.8 (8.8.8.8): 56 data bytes
+64 bytes from 8.8.8.8: seq=0 ttl=40 time=25.513 ms
+64 bytes from 8.8.8.8: seq=1 ttl=40 time=25.348 ms
+64 bytes from 8.8.8.8: seq=2 ttl=40 time=25.226 ms
+64 bytes from 8.8.8.8: seq=3 ttl=40 time=25.275 ms
+
+--- 8.8.8.8 ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max = 25.226/25.340/25.513 ms
+</pre></div>
+</div>
+<p>Now that we&#8217;re done with the container we can delete it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum container-delete test-container
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-and-using-a-mesos-bay">
+<h2>Building and Using a Mesos Bay<a class="headerlink" href="#building-and-using-a-mesos-bay" title="Permalink to this headline">¶</a></h2>
+<p>Provisioning a mesos bay requires a Ubuntu-based image with some packages
+pre-installed. To build and upload such image, please refer to
+<a class="reference external" href="http://docs.openstack.org/developer/magnum/dev/dev-heat-mesos.html">http://docs.openstack.org/developer/magnum/dev/dev-heat-mesos.html</a></p>
+<p>Then, create a baymodel by using &#8216;mesos&#8217; as the coe, with the rest of arguments
+similar to the Kubernetes baymodel:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum baymodel-create --name mesosbaymodel --image-id ubuntu-mesos \
+                       --keypair-id testkey \
+                       --external-network-id public \
+                       --dns-nameserver 8.8.8.8 \
+                       --flavor-id m1.small \
+                       --coe mesos
+</pre></div>
+</div>
+<p>Finally, create the bay. Use the baymodel &#8216;mesosbaymodel&#8217; as a template for
+bay creation. This bay will result in one mesos master node and two mesos
+slave nodes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-create --name mesosbay --baymodel mesosbaymodel --node-count 2
+</pre></div>
+</div>
+<p>Now that we have a mesos bay we can start interacting with it. First we need
+to make sure the bay&#8217;s status is &#8216;CREATE_COMPLETE&#8217;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ magnum bay-show mesosbay
++--------------------+--------------------------------------+
+| Property           | Value                                |
++--------------------+--------------------------------------+
+| status             | CREATE_COMPLETE                      |
+| uuid               | ff727f0d-72ca-4e2b-9fef-5ec853d74fdf |
+| status_reason      | Stack CREATE completed successfully  |
+| created_at         | 2015-06-09T20:21:43+00:00            |
+| updated_at         | 2015-06-09T20:28:18+00:00            |
+| bay_create_timeout | 0                                    |
+| api_address        | 172.24.4.115                         |
+| baymodel_id        | 92dbda62-32d4-4435-88fc-8f42d514b347 |
+| node_count         | 2                                    |
+| node_addresses     | [u&#39;172.24.4.116&#39;, u&#39;172.24.4.117&#39;]   |
+| master_count       | 1                                    |
+| discovery_url      | None                                 |
+| name               | mesosbay                             |
++--------------------+--------------------------------------+
+</pre></div>
+</div>
+<p>Next we will create a container in this bay by using the REST API of Marathon.
+This container will ping the address 8.8.8.8:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ cat &gt; mesos.json &lt;&lt; END
+{
+  &quot;container&quot;: {
+    &quot;type&quot;: &quot;DOCKER&quot;,
+    &quot;docker&quot;: {
+      &quot;image&quot;: &quot;cirros&quot;
+    }
+  },
+  &quot;id&quot;: &quot;ubuntu&quot;,
+  &quot;instances&quot;: 1,
+  &quot;cpus&quot;: 0.5,
+  &quot;mem&quot;: 512,
+  &quot;uris&quot;: [],
+  &quot;cmd&quot;: &quot;ping 8.8.8.8&quot;
+}
+END
+$ MASTER_IP=$(magnum bay-show mesosbay | awk &#39;/ api_address /{print $4}&#39;)
+$ curl -X POST -H &quot;Content-Type: application/json&quot; \
+    http://${MASTER_IP}:8080/v2/apps -d@mesos.json
+</pre></div>
+</div>
+<p>To check application and task status:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ curl http://${MASTER_IP}:8080/v2/apps
+$ curl http://${MASTER_IP}:8080/v2/tasks
+</pre></div>
+</div>
+<p>You can access to the Mesos web page at http://&lt;master&gt;:5050/ and Marathon web
+console at http://&lt;master&gt;:8080/.</p>
+</div>
+<div class="section" id="building-developer-documentation">
+<h2>Building Developer Documentation<a class="headerlink" href="#building-developer-documentation" title="Permalink to this headline">¶</a></h2>
+<p>To build the documentation locally (e.g., to test documentation changes
+before uploading them for review) chdir to the magnum root folder and
+run tox:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">tox</span> <span class="o">-</span><span class="n">edocs</span>
+</pre></div>
+</div>
+<p>Note: The first time you run this will take some extra time as it
+creates a virtual environment to run in.</p>
+<p>When complete, the documentation can be accessed from:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">doc</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">index</span><span class="o">.</span><span class="n">html</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Developer Quick-Start</a><ul>
+<li><a class="reference internal" href="#setup-dev-environment">Setup Dev Environment</a></li>
+<li><a class="reference internal" href="#exercising-the-services-using-devstack">Exercising the Services Using Devstack</a></li>
+<li><a class="reference internal" href="#building-a-kubernetes-bay">Building a Kubernetes Bay</a></li>
+<li><a class="reference internal" href="#using-kubernetes-bay">Using Kubernetes Bay</a></li>
+<li><a class="reference internal" href="#building-and-using-a-swarm-bay">Building and Using a Swarm Bay</a></li>
+<li><a class="reference internal" href="#building-and-using-a-mesos-bay">Building and Using a Mesos Bay</a></li>
+<li><a class="reference internal" href="#building-developer-documentation">Building Developer Documentation</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../index.html" title="previous chapter">Welcome to demo&#8217;s documentation!</a></li>
+      <li>Next: <a href="dev-manual-devstack.html" title="next chapter">Manually Adding Magnum to DevStack</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/dev/dev-quickstart.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, bughunter.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../_sources/dev/dev-quickstart.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
