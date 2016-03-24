@@ -1,0 +1,434 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Manually Adding Magnum to DevStack &mdash; bughunter 0.0.3.dev2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/logo.jpg"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bughunter 0.0.3.dev2 documentation" href="../index.html"/>
+        <link rel="next" title="Building and updating Fedora Atomic image" href="dev-build-atomic-image.html"/>
+        <link rel="prev" title="Developer Quick-Start" href="dev-quickstart.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> bughunter
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3.dev2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dev-quickstart.html">Developer Quick-Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Manually Adding Magnum to DevStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-build-atomic-image.html">Building and updating Fedora Atomic image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-kubernetes-load-balancer.html">Using Kubernetes external load balancer feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-tls.html">Transport Layer Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heat-templates.html">Heat Template Definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../objects.html">Versioned Objects</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">bughunter</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Manually Adding Magnum to DevStack</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/dev/dev-manual-devstack.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="manually-adding-magnum-to-devstack">
+<span id="dev-manual-install"></span><h1>Manually Adding Magnum to DevStack<a class="headerlink" href="#manually-adding-magnum-to-devstack" title="Permalink to this headline">¶</a></h1>
+<p>If you are getting started with magnum it is recommended you follow the
+<a class="reference internal" href="dev-quickstart.html#dev-quickstart"><span>Developer Quick-Start</span></a> to get up and running with magnum. This guide covers
+a more in-depth process to setup magnum with devstack.</p>
+<p>Magnum depends on nova, glance, heat, barbican, and neutron to create and
+schedule virtual machines to simulate bare-metal. Full bare-metal support
+is still under active development.</p>
+<p>This session has only been tested on Ubuntu 14.04 (Trusty) and Fedora 20/21.
+We recommend users to select one of them if it is possible.</p>
+<p>Clone devstack:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cd ~
+git clone https://git.openstack.org/openstack-dev/devstack
+</pre></div>
+</div>
+<p>Configure devstack with the minimal settings required to enable heat
+and neutron:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cd devstack
+cat &gt; local.conf &lt;&lt; END
+[[local|localrc]]
+# Modify to your environment
+FLOATING_RANGE=192.168.1.224/27
+PUBLIC_NETWORK_GATEWAY=192.168.1.225
+PUBLIC_INTERFACE=em1
+
+# Credentials
+ADMIN_PASSWORD=password
+DATABASE_PASSWORD=password
+RABBIT_PASSWORD=password
+SERVICE_PASSWORD=password
+SERVICE_TOKEN=password
+
+enable_service rabbit
+
+# Ensure we are using neutron networking rather than nova networking
+# (Neutron is enabled by default since Kilo)
+disable_service n-net
+enable_service q-svc
+enable_service q-agt
+enable_service q-dhcp
+enable_service q-l3
+enable_service q-meta
+enable_service neutron
+
+# Enable heat services
+enable_service h-eng
+enable_service h-api
+enable_service h-api-cfn
+enable_service h-api-cw
+
+# Enable barbican services
+enable_plugin barbican https://git.openstack.org/openstack/barbican
+
+FIXED_RANGE=10.0.0.0/24
+
+Q_USE_SECGROUP=True
+ENABLE_TENANT_VLANS=True
+TENANT_VLAN_RANGE=
+
+PHYSICAL_NETWORK=public
+OVS_PHYSICAL_BRIDGE=br-ex
+
+# Log all output to files
+LOGFILE=$HOME/devstack.log
+SCREEN_LOGDIR=$HOME/logs
+
+VOLUME_BACKING_FILE_SIZE=20G
+END
+</pre></div>
+</div>
+<p>Note: Update PUBLIC_INTERFACE and other parameters as appropriate for your
+system.</p>
+<p>More devstack configuration information can be found at
+<a class="reference external" href="http://docs.openstack.org/developer/devstack/configuration.html">http://docs.openstack.org/developer/devstack/configuration.html</a></p>
+<p>More neutron configuration information can be found at
+<a class="reference external" href="http://docs.openstack.org/developer/devstack/guides/neutron.html">http://docs.openstack.org/developer/devstack/guides/neutron.html</a></p>
+<p>Optionally, you can enable ceilometer in devstack. If ceilometer is enabled,
+magnum will periodically send metrics to ceilometer. If you need this feature,
+add the following line to your <cite>local.conf</cite> file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>enable_plugin ceilometer git://git.openstack.org/openstack/ceilometer
+</pre></div>
+</div>
+<p>Create a local.sh to automatically make necessary networking changes during
+the devstack deployment process. This will allow bays spawned by magnum to
+access the internet through PUBLIC_INTERFACE:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cat &gt; local.sh &lt;&lt; &#39;END_LOCAL_SH&#39;
+#!/bin/sh
+ROUTE_TO_INTERNET=$(ip route get 8.8.8.8)
+OBOUND_DEV=$(echo ${ROUTE_TO_INTERNET#*dev} | awk &#39;{print $1}&#39;)
+sudo iptables -t nat -A POSTROUTING -o $OBOUND_DEV -j MASQUERADE
+END_LOCAL_SH
+chmod 755 local.sh
+</pre></div>
+</div>
+<p>Run devstack:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>./stack.sh
+</pre></div>
+</div>
+<p>Note: If using the m-1 tag or tarball, please use the documentation shipped
+with the milestone as the current master instructions are slightly
+incompatible.</p>
+<p>Prepare your session to be able to use the various openstack clients including
+magnum, neutron, and glance. Create a new shell, and source the devstack openrc
+script:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>source ~/devstack/openrc admin admin
+</pre></div>
+</div>
+<p>Magnum has been tested with the Fedora Atomic micro-OS and CoreOS. Magnum will
+likely work with other micro-OS platforms, but each requires individual
+support in the heat template.</p>
+<p>Store the Fedora Atomic micro-OS in glance. (The steps for updating Fedora
+Atomic images are a bit detailed. Fortunately one of the core developers has
+made Atomic images available at <a class="reference external" href="https://fedorapeople.org/groups/magnum">https://fedorapeople.org/groups/magnum</a>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cd ~
+wget https://fedorapeople.org/groups/magnum/fedora-21-atomic-5.qcow2
+glance image-create --name fedora-21-atomic-5 \
+                    --is-public True \
+                    --disk-format qcow2 \
+                    --property os_distro=&#39;fedora-atomic&#39;\
+                    --container-format bare &lt; fedora-21-atomic-5.qcow2
+</pre></div>
+</div>
+<p>Create a keypair for use with the baymodel:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>test -f ~/.ssh/id_rsa.pub || ssh-keygen -t rsa -N &quot;&quot; -f ~/.ssh/id_rsa
+nova keypair-add --pub-key ~/.ssh/id_rsa.pub testkey
+</pre></div>
+</div>
+<p>Create a database in MySQL for magnum:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>mysql -h 127.0.0.1 -u root -ppassword mysql &lt;&lt;EOF
+CREATE DATABASE IF NOT EXISTS magnum DEFAULT CHARACTER SET utf8;
+GRANT ALL PRIVILEGES ON magnum.* TO
+    &#39;root&#39;@&#39;%&#39; IDENTIFIED BY &#39;password&#39;
+EOF
+</pre></div>
+</div>
+<p>Clone and install magnum:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cd ~
+git clone https://git.openstack.org/openstack/magnum
+cd magnum
+sudo pip install -e .
+</pre></div>
+</div>
+<p>Configure magnum:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span># create the magnum conf directory
+sudo mkdir -p /etc/magnum
+
+# copy sample config and modify it as necessary
+sudo cp etc/magnum/magnum.conf.sample /etc/magnum/magnum.conf
+
+# copy policy.json
+sudo cp etc/magnum/policy.json /etc/magnum/policy.json
+
+# enable debugging output
+sudo sed -i &quot;s/#debug\s*=.*/debug=true/&quot; /etc/magnum/magnum.conf
+
+# set RabbitMQ userid
+sudo sed -i &quot;s/#rabbit_userid\s*=.*/rabbit_userid=stackrabbit/&quot; \
+         /etc/magnum/magnum.conf
+
+# set RabbitMQ password
+sudo sed -i &quot;s/#rabbit_password\s*=.*/rabbit_password=password/&quot; \
+         /etc/magnum/magnum.conf
+
+# set SQLAlchemy connection string to connect to MySQL
+sudo sed -i &quot;s/#connection\s*=.*/connection=mysql:\/\/root:password@localhost\/magnum/&quot; \
+         /etc/magnum/magnum.conf
+
+# set Keystone account username
+sudo sed -i &quot;s/#admin_user\s*=.*/admin_user=admin/&quot; \
+         /etc/magnum/magnum.conf
+
+# set Keystone account password
+sudo sed -i &quot;s/#admin_password\s*=.*/admin_password=password/&quot; \
+         /etc/magnum/magnum.conf
+
+# set admin Identity API endpoint
+sudo sed -i &quot;s/#identity_uri\s*=.*/identity_uri=http:\/\/127.0.0.1:35357/&quot; \
+         /etc/magnum/magnum.conf
+
+# set public Identity API endpoint
+sudo sed -i &quot;s/#auth_uri\s*=.*/auth_uri=http:\/\/127.0.0.1:5000\/v2.0/&quot; \
+         /etc/magnum/magnum.conf
+
+# set notification_driver (if using ceilometer)
+sudo sed -i &quot;s/#notification_driver\s*=.*/notification_driver=messaging/&quot; \
+         /etc/magnum/magnum.conf
+</pre></div>
+</div>
+<p>Clone and install the magnum client:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cd ~
+git clone https://git.openstack.org/openstack/python-magnumclient
+cd python-magnumclient
+sudo pip install -e .
+</pre></div>
+</div>
+<p>Configure the database for use with magnum. Please note that DB migration
+does not work for SQLite backend. The SQLite database does not
+have any support for the ALTER statement needed by relational schema
+based migration tools. Hence DB Migration will not work for SQLite
+backend:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum-db-manage upgrade
+</pre></div>
+</div>
+<p>Configure the keystone endpoint:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>keystone service-create --name=magnum \
+                        --type=container \
+                        --description=&quot;magnum Container Service&quot;
+keystone endpoint-create --service=magnum \
+                         --publicurl=http://127.0.0.1:9511/v1 \
+                         --internalurl=http://127.0.0.1:9511/v1 \
+                         --adminurl=http://127.0.0.1:9511/v1 \
+                         --region RegionOne
+</pre></div>
+</div>
+<p>Start the API service in a new screen:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">magnum</span><span class="o">-</span><span class="n">api</span>
+</pre></div>
+</div>
+<p>Start the conductor service in a new screen:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">magnum</span><span class="o">-</span><span class="n">conductor</span>
+</pre></div>
+</div>
+<p>Magnum should now be up and running!</p>
+<p>Further details on utilizing magnum and deploying containers can be found in
+the guide <a class="reference internal" href="dev-quickstart.html#dev-quickstart"><span>Developer Quick-Start</span></a>.</p>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dev-build-atomic-image.html" class="btn btn-neutral float-right" title="Building and updating Fedora Atomic image" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="dev-quickstart.html" class="btn btn-neutral" title="Developer Quick-Start" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bughunter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.3.dev2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Document Title &mdash; bughunter 0.0.3.dev2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo.jpg"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bughunter 0.0.3.dev2 documentation" href="#"/>
+        <link rel="next" title="Developer Quick-Start" href="dev/dev-quickstart.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> bughunter
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3.dev2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-quickstart.html">Developer Quick-Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-manual-devstack.html">Manually Adding Magnum to DevStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-build-atomic-image.html">Building and updating Fedora Atomic image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-kubernetes-load-balancer.html">Using Kubernetes external load balancer feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-tls.html">Transport Layer Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat-templates.html">Heat Template Definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="objects.html">Versioned Objects</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">bughunter</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="#">Docs</a> &raquo;</li>
+      
+    <li>Document Title</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="document-title">
+<h1>Document Title<a class="headerlink" href="#document-title" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subtitle">
+<h2>SubTitle<a class="headerlink" href="#subtitle" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sectiontitle">
+<h3>SectionTitle<a class="headerlink" href="#sectiontitle" title="Permalink to this headline">¶</a></h3>
+<p>我是李浩然
+for deploying and managing containers as first class resources in OpenStack.</p>
+<ul class="simple">
+<li><strong>Free software:</strong> under the <a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">Apache license</a></li>
+<li><strong>Source:</strong> <a class="reference external" href="http://git.openstack.org/cgit/openstack/magnum">http://git.openstack.org/cgit/openstack/magnum</a></li>
+<li><strong>Blueprints:</strong> <a class="reference external" href="https://blueprints.launchpad.net/magnum">https://blueprints.launchpad.net/magnum</a></li>
+<li><strong>Bugs:</strong> <a class="reference external" href="http://bugs.launchpad.net/magnum">http://bugs.launchpad.net/magnum</a></li>
+<li><strong>REST Client:</strong> <a class="reference external" href="http://git.openstack.org/cgit/openstack/python-magnumclient">http://git.openstack.org/cgit/openstack/python-magnumclient</a></li>
+</ul>
+</div>
+<div class="section" id="bughunter">
+<h3>BugHunter<a class="headerlink" href="#bughunter" title="Permalink to this headline">¶</a></h3>
+<p>There are several different types of objects in the magnum system:</p>
+<ul class="simple">
+<li><strong>Bay:</strong> A collection of node objects where work is scheduled</li>
+<li><strong>BayModel:</strong> An object stores template information about the bay which is
+used to create new bays consistently</li>
+<li><strong>Node:</strong> A baremetal or virtual machine where work executes</li>
+<li><strong>Pod:</strong> A collection of containers running on one physical or virtual
+machine</li>
+<li><strong>Service:</strong> An abstraction which defines a logical set of pods and a policy
+by which to access them</li>
+<li><strong>ReplicationController:</strong> An abstraction for managing a group of pods to
+ensure a specified number of resources are running</li>
+<li><strong>Container:</strong> A Docker container</li>
+</ul>
+<p>Two binaries work together to compose the magnum system.  The first binary
+(accessed by the python-magnumclient code) is the magnum-api REST server.  The
+REST server may run as one process or multiple processes.  When a REST request
+is sent to the client API, the request is sent via AMQP to the
+magnum-conductor process.  The REST server is horizontally scalable.  At this
+time, the conductor is limited to one process, but we intend to add horizontal
+scalability to the conductor as well.</p>
+<p>The magnum-conductor process runs on a controller machine and connects to a
+Kubernetes or Docker REST API endpoint.  The Kubernetes and Docker REST API
+endpoints are managed by the bay object.</p>
+<p>When service or pod objects are created, Kubernetes may be directly contacted
+via the Kubernetes REST API.  When container objects are acted upon, the
+Docker REST API may be directly contacted.</p>
+</div>
+<div class="section" id="features">
+<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Abstractions for bays, containers, nodes, pods, replication controllers, and
+services</li>
+<li>Integration with Kubernetes and Docker for backend container technology</li>
+<li>Integration with Keystone for multi-tenant security</li>
+<li>Integration with Neutron for Kubernetes multi-tenancy network security</li>
+</ul>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s2">&quot;I love you&quot;</span>
+</pre></div>
+</td></tr></table></div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env pyhton</span>
+<span class="c1">#-*- coding:utf-8 -*-</span>
+<span class="k">def</span> <span class="nf">sayhello</span><span class="p">():</span>
+	<span class="k">print</span> <span class="s1">&#39;hello&#39;</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="n">sayhello</span><span class="p">()</span>
+</pre></div>
+</div>
+<table border="1" class="docutils">
+<colgroup>
+<col width="30%" />
+<col width="24%" />
+<col width="46%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">node</th>
+<th class="head">func</th>
+<th class="head">ip</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>compute1</td>
+<td>nova</td>
+<td>192.168.1.10</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils" id="id2">
+<caption><span class="caption-text">Frozen Delights!</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="27%" />
+<col width="18%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Treat</th>
+<th class="head">Quality</th>
+<th class="head">Decription</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>BugHunter</td>
+<td>100</td>
+<td>On a stick</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils" id="id3">
+<caption><span class="caption-text">Frozen Delights!</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="27%" />
+<col width="18%" />
+<col width="55%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Treat</th>
+<th class="head">Quality</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Albatross</td>
+<td>2.99</td>
+<td>I love you</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="test">
+<h3>Test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>列表第一集<ul>
+<li>第二级<ul>
+<li>第三级</li>
+</ul>
+</li>
+<li>第二级的另一个项目</li>
+</ul>
+</li>
+</ul>
+<p>1. 数字
+a. 小写字母
+A. 大写字母
+i) 小写罗马数字
+(I) 大写罗马数字</p>
+<p><em>I love you</em></p>
+<p><strong>I love you</strong></p>
+<p><a class="reference internal" href="dev/dev-quickstart.html#dev-quickstart"><span>buzz</span></a></p>
+<div class="figure" id="id4">
+<span id="fig-0101"></span><img alt="_images/bamboo.jpg" src="_images/bamboo.jpg" />
+<p class="caption"><span class="caption-text">chart 1—1 bamboo</span></p>
+</div>
+<p><a class="reference internal" href="#fig-0101"><span>bamboo</span></a></p>
+<p>H<sub>2</sub>O</p>
+<p>E = mc<sup>2</sup></p>
+</div>
+<div class="section" id="paragraph">
+<h3>Paragraph<a class="headerlink" href="#paragraph" title="Permalink to this headline">¶</a></h3>
+<p>This is a paragraph. It&#8217;s quite
+short.</p>
+<blockquote>
+<div>This paragraph will result in an indented block of
+text,typically used for quoting other text.How about
+the too long paragraph.Oh!I know!</div></blockquote>
+<p>this is another one.</p>
+<ul class="simple">
+<li><strong>Source:</strong> <a class="reference external" href="http://git.openstack.org/cgit/openstack/magnum">http://git.openstack.org/cgit/openstack/magnum</a></li>
+<li><strong>Blueprints:</strong> <a class="reference external" href="https://blueprints.launchpad.net/magnum">https://blueprints.launchpad.net/magnum</a></li>
+<li><strong>Bugs:</strong> <a class="reference external" href="http://bugs.launchpad.net/magnum">http://bugs.launchpad.net/magnum</a></li>
+</ul>
+<p>thisis<em>one</em>world</p>
+<p><code class="docutils literal"><span class="pre">double</span> <span class="pre">*</span> <span class="pre">black-quotes</span></code></p>
+<p><code class="docutils literal"><span class="pre">*</span></code></p>
+<p>* nidate</p>
+<p>Ilvoe*you</p>
+<ol class="arabic">
+<li><p class="first">number</p>
+</li>
+<li><p class="first">upper-case letters
+and it goes over many times</p>
+<p>with two paragraphs and all!</p>
+</li>
+</ol>
+<ol class="loweralpha simple">
+<li>lower case letters<ol class="arabic">
+<li>with a sub-list starting at a different number</li>
+<li>make sure the number are in the correct sequence though!</li>
+</ol>
+</li>
+</ol>
+<ol class="upperroman simple">
+<li>upper-case roman</li>
+</ol>
+<ol class="lowerroman simple">
+<li>lower roman</li>
+</ol>
+<ol class="arabic simple">
+<li>numbers again</li>
+</ol>
+<ol class="arabic simple">
+<li>and again</li>
+</ol>
+<ul class="simple">
+<li>abullet point using &#8220;*&#8221;<ul>
+<li>a sub-list using &#8220;-&#8220;<ul>
+<li>yet another sub-list</li>
+</ul>
+</li>
+<li>another item</li>
+</ul>
+</li>
+</ul>
+<table class="docutils citation" frame="void" id="cit2002" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[CIT2002]</a></td><td>A citation
+(as often used in journals).</td></tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>what</dt>
+<dd>Definition lists associate a term with a definition.</dd>
+<dt><em>how</em></dt>
+<dd>The term is a one-line phrase, and the definition is one or more
+paragraphs or body elements, indented relative to the term.
+blank lines are not allowed between term and definition.</dd>
+</dl>
+<p>An example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>  Whitespace, newlines, blank lines, and all kinds of markup
+(like *this* or \this) is presented by literal nlocks.
+Lookie here, I&#39;ve dropped an indentation level
+(but not far enough)
+</pre></div>
+</div>
+<p>no more example</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>this is preformatted text, and the
+last &quot;::&quot; paragraph is removed
+</pre></div>
+</div>
+</div>
+<div class="section" id="chapter-1-title">
+<h3>Chapter 1 Title<a class="headerlink" href="#chapter-1-title" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="section-1-1-title">
+<h4>Section 1.1 Title<a class="headerlink" href="#section-1-1-title" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="subsection-1-1-1-title">
+<h5>Subsection 1.1.1 Title<a class="headerlink" href="#subsection-1-1-1-title" title="Permalink to this headline">¶</a></h5>
+</div>
+</div>
+<div class="section" id="section-1-2-title">
+<h4>Section 1.2 Title<a class="headerlink" href="#section-1-2-title" title="Permalink to this headline">¶</a></h4>
+</div>
+</div>
+<div class="section" id="chapter-2-title">
+<h3>Chapter 2 Title<a class="headerlink" href="#chapter-2-title" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="#test">Test</a></p>
+<hr class="docutils" />
+<p><a class="reference internal" href="#cit2002" id="id1">[CIT2002]</a></p>
+</div>
+<div class="section" id="developer-info">
+<h3>Developer Info<a class="headerlink" href="#developer-info" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-quickstart.html">Developer Quick-Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-manual-devstack.html">Manually Adding Magnum to DevStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-build-atomic-image.html">Building and updating Fedora Atomic image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-kubernetes-load-balancer.html">Using Kubernetes external load balancer feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-tls.html">Transport Layer Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat-templates.html">Heat Template Definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="objects.html">Versioned Objects</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dev/dev-quickstart.html" class="btn btn-neutral float-right" title="Developer Quick-Start" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bughunter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.3.dev2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

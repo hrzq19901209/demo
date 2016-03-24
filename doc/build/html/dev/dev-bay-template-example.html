@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example Bay Template &mdash; bughunter 0.0.3.dev2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/logo.jpg"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bughunter 0.0.3.dev2 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> bughunter
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3.dev2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="dev-quickstart.html">Developer Quick-Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-manual-devstack.html">Manually Adding Magnum to DevStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-build-atomic-image.html">Building and updating Fedora Atomic image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-kubernetes-load-balancer.html">Using Kubernetes external load balancer feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-tls.html">Transport Layer Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heat-templates.html">Heat Template Definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../objects.html">Versioned Objects</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">bughunter</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Example Bay Template</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/dev/dev-bay-template-example.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="example-bay-template">
+<h1>Example Bay Template<a class="headerlink" href="#example-bay-template" title="Permalink to this headline">¶</a></h1>
+<p>This project is an example to demonstrate the necessary pieces of a Bay
+template. There are three key pieces to a bay template:</p>
+<ol class="arabic simple">
+<li>Heat template - The Heat template that Magnum will use to generate a Bay.</li>
+<li>Template definition - Magnum&#8217;s interface for interacting with the Heat
+template.</li>
+<li>Definition Entry Point - Used to advertise the available template
+definitions.</li>
+</ol>
+<div class="section" id="the-heat-template">
+<h2>The Heat Template<a class="headerlink" href="#the-heat-template" title="Permalink to this headline">¶</a></h2>
+<p>The heat template is where most of the real work happens. The result of the
+Heat template should be a full Container Orchestration Environment.</p>
+</div>
+<div class="section" id="the-template-definition">
+<h2>The Template Definition<a class="headerlink" href="#the-template-definition" title="Permalink to this headline">¶</a></h2>
+<p>Template definitions are a mapping of Magnum object attributes and Heat
+template parameters, along with Magnum consumable template outputs. Each
+definition also denotes which Bay Types it can provide. Bay Types are how
+Magnum determines which of the enabled Template Definitions it will use for a
+given Bay.</p>
+</div>
+<div class="section" id="the-definition-entry-point">
+<h2>The Definition Entry Point<a class="headerlink" href="#the-definition-entry-point" title="Permalink to this headline">¶</a></h2>
+<p>Entry points are a standard discovery and import mechanism for Python objects.
+Each Template Definition should have an Entry Point in the
+<cite>magnum.template_definitions</cite> group. This example exposes it&#8217;s Template
+Definition as <cite>example_template = example_template:ExampleTemplate</cite> in the
+<cite>magnum.template_definitions</cite> group.</p>
+</div>
+<div class="section" id="installing-bay-templates">
+<h2>Installing Bay Templates<a class="headerlink" href="#installing-bay-templates" title="Permalink to this headline">¶</a></h2>
+<p>Because Bay Templates are basically Python projects, they can be worked with
+like any other Python project. They can be cloned from version control and
+installed or uploaded to a package index and installed via utilities such as
+pip.</p>
+<p>Enabling a template is as simple as adding it&#8217;s Entry Point to the
+<cite>enabled_definitions</cite> config option in magnum.conf.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span># Setup python environment and install Magnum
+
+$ virtualenv .venv
+$ source .venv/bin/active
+(.venv)$ git clone https://github.com/openstack/magnum.git
+(.venv)$ cd magnum
+(.venv)$ python setup.py install
+
+# List installed templates, notice default templates are enabled
+
+(.venv)$ magnum-template-manage list-templates
+Enabled Templates
+  magnum_vm_atomic_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster.yaml
+  magnum_vm_coreos_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster-coreos.yaml
+Disabled Templates
+
+# Install example template
+
+(.venv)$ cd contrib/templates/example
+(.venv)$ python setup.py install
+
+# List installed templates, notice example template is disabled
+
+(.venv)$ magnum-template-manage list-templates
+Enabled Templates
+  magnum_vm_atomic_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster.yaml
+  magnum_vm_coreos_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster-coreos.yaml
+Disabled Templates
+  example_template: /home/example/.venv/local/lib/python2.7/site-packages/ExampleTemplate-0.1-py2.7.egg/example_template/example.yaml
+
+# Enable example template by setting enabled_definitions in magnum.conf
+
+(.venv)$ sudo mkdir /etc/magnum
+(.venv)$ sudo bash -c &quot;cat &gt; /etc/magnum/magnum.conf &lt;&lt; END_CONF
+[bay]
+enabled_definitions=magnum_vm_atomic_k8s,magnum_vm_coreos_k8s,example_template
+END_CONF&quot;
+
+# List installed templates, notice example template is now enabled
+
+(.venv)$ magnum-template-manage list-templates
+Enabled Templates
+  example_template: /home/example/.venv/local/lib/python2.7/site-packages/ExampleTemplate-0.1-py2.7.egg/example_template/example.yaml
+  magnum_vm_atomic_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster.yaml
+  magnum_vm_coreos_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster-coreos.yaml
+Disabled Templates
+
+# Use --details argument to get more details about each template
+
+(.venv)$ magnum-template-manage list-templates --details
+Enabled Templates
+  example_template: /home/example/.venv/local/lib/python2.7/site-packages/ExampleTemplate-0.1-py2.7.egg/example_template/example.yaml
+     Server_Type  OS       CoE
+     vm         example  example_coe
+  magnum_vm_atomic_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster.yaml
+     Server_Type   OS             CoE
+     vm        fedora-atomic  kubernetes
+  magnum_vm_coreos_k8s: /home/example/.venv/local/lib/python2.7/site-packages/magnum/templates/heat-kubernetes/kubecluster-coreos.yaml
+     Server_Type  OS      CoE
+     vm         coreos  kubernetes
+Disabled Templates
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bughunter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.3.dev2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

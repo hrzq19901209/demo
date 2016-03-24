@@ -1,0 +1,410 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Transport Layer Security &mdash; bughunter 0.0.3.dev2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/logo.jpg"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bughunter 0.0.3.dev2 documentation" href="../index.html"/>
+        <link rel="next" title="Contributing" href="../contributing.html"/>
+        <link rel="prev" title="Using Kubernetes external load balancer feature" href="dev-kubernetes-load-balancer.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> bughunter
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3.dev2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dev-quickstart.html">Developer Quick-Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-manual-devstack.html">Manually Adding Magnum to DevStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-build-atomic-image.html">Building and updating Fedora Atomic image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-kubernetes-load-balancer.html">Using Kubernetes external load balancer feature</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Transport Layer Security</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#deploy-a-secure-bay">Deploy a secure bay</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-a-client-key-and-certificate-signing-request">Generating a Client Key and Certificate Signing Request</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heat-templates.html">Heat Template Definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../objects.html">Versioned Objects</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">bughunter</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Transport Layer Security</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/dev/dev-tls.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="transport-layer-security">
+<h1>Transport Layer Security<a class="headerlink" href="#transport-layer-security" title="Permalink to this headline">¶</a></h1>
+<p>Magnum uses TLS to secure communication between a Bay&#8217;s services and the
+outside world. This includes not only Magnum itself, but also the end-user
+when they choose to use native client libraries to interact with the Bay.
+Magnum also uses TLS certificates for client authentication, which means each
+client needs a valid certificate to communicate with a Bay.</p>
+<p>TLS is a complex subject, and many guides on it exist already. This guide will
+not attempt to fully describe TLS, only the necessary pieces to get a client
+set up to talk to a Bay with TLS. A more indepth guide on TLS can be found in
+the <a class="reference external" href="https://www.feistyduck.com/books/openssl-cookbook/">OpenSSL Cookbook</a>
+by Ivan Ristić.</p>
+<div class="section" id="deploy-a-secure-bay">
+<h2>Deploy a secure bay<a class="headerlink" href="#deploy-a-secure-bay" title="Permalink to this headline">¶</a></h2>
+<p>Magnum supports secure communication between the Magnum service and the
+Kubernetes service using TLS. This document explains how to use this feature.</p>
+<p>Below is the detailed step for deploying a secure bay and using kubectl to
+run Kubernetes commands that uses SSL certificates to communicate with
+Kubernetes services running on secure bay.</p>
+<p>Create a baymodel, by default TLS is enabled in Magnum:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum baymodel-create --name secure-kubernetes \
+                       --keypair-id default \
+                       --external-network-id public \
+                       --image-id fedora-21-atomic-5 \
+                       --flavor-id m1.small \
+                       --docker-volume-size 1 \
+                       --coe kubernetes \
+                       --network-driver flannel
+
++---------------------+--------------------------------------+
+| Property            | Value                                |
++---------------------+--------------------------------------+
+| http_proxy          | None                                 |
+| updated_at          | None                                 |
+| master_flavor_id    | None                                 |
+| fixed_network       | None                                 |
+| uuid                | 668a5e97-ba92-4b84-bdc3-e2388e0462ea |
+| no_proxy            | None                                 |
+| https_proxy         | None                                 |
+| tls_disabled        | False                                |
+| keypair_id          | default                              |
+| public              | False                                |
+| labels              | {}                                   |
+| docker_volume_size  | 1                                    |
+| external_network_id | public                               |
+| cluster_distro      | fedora-atomic                        |
+| image_id            | fedora-21-atomic-5                   |
+| registry_enabled    | False                                |
+| apiserver_port      | None                                 |
+| name                | secure-kubernetes                    |
+| created_at          | 2015-10-08T05:05:10+00:00            |
+| network_driver      | flannel                              |
+| ssh_authorized_key  | None                                 |
+| coe                 | kubernetes                           |
+| flavor_id           | m1.small                             |
+| dns_nameserver      | 8.8.8.8                              |
++---------------------+--------------------------------------+
+</pre></div>
+</div>
+<p>To disable TLS in magnum use option &#8216;&#8211;tls-disabled&#8217;. Please note it is not
+recommended to disable TLS due to security reasons.</p>
+<p>Now create a bay. Use the baymodel name as a template for bay creation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-create --name secure-k8sbay \
+                  --baymodel secure-kubernetes \
+                  --node-count 1
+
++--------------------+------------------------------------------------------------+
+| Property           | Value                                                      |
++--------------------+------------------------------------------------------------+
+| status             | None                                                       |
+| uuid               | 04952c60-a338-437f-a7e7-d016d1d00e65                       |
+| status_reason      | None                                                       |
+| created_at         | 2015-10-08T04:19:14+00:00                                  |
+| updated_at         | None                                                       |
+| bay_create_timeout | 0                                                          |
+| api_address        | None                                                       |
+| baymodel_id        | da2825a0-6d09-4208-b39e-b2db666f1118                       |
+| node_count         | 1                                                          |
+| node_addresses     | None                                                       |
+| master_count       | 1                                                          |
+| discovery_url      | https://discovery.etcd.io/3b7fb09733429d16679484673ba3bfd5 |
+| name               | secure-k8sbay                                              |
++--------------------+------------------------------------------------------------+
+</pre></div>
+</div>
+<p>Now run bay-show command to get the IP of the bay host:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum bay-show secure-k8sbay
++--------------------+------------------------------------------------------------+
+| Property           | Value                                                      |
++--------------------+------------------------------------------------------------+
+| status             | CREATE_COMPLETE                                            |
+| uuid               | 04952c60-a338-437f-a7e7-d016d1d00e65                       |
+| status_reason      | Stack CREATE completed successfully                        |
+| created_at         | 2015-10-08T04:19:14+00:00                                  |
+| updated_at         | 2015-10-08T04:21:00+00:00                                  |
+| bay_create_timeout | 0                                                          |
+| api_address        | https://192.168.19.86:6443                                 |
+| baymodel_id        | da2825a0-6d09-4208-b39e-b2db666f1118                       |
+| node_count         | 1                                                          |
+| node_addresses     | [u&#39;192.168.19.88&#39;]                                         |
+| master_count       | 1                                                          |
+| discovery_url      | https://discovery.etcd.io/3b7fb09733429d16679484673ba3bfd5 |
+| name               | secure-k8sbay                                              |
++--------------------+------------------------------------------------------------+
+</pre></div>
+</div>
+<p>You can see the api_address contains https in URL that denotes the Kubernetes
+services are configured securely with SSL certificates and now any
+communication to kube-apiserver will be over https making it secure.</p>
+</div>
+<div class="section" id="generating-a-client-key-and-certificate-signing-request">
+<h2>Generating a Client Key and Certificate Signing Request<a class="headerlink" href="#generating-a-client-key-and-certificate-signing-request" title="Permalink to this headline">¶</a></h2>
+<p>The first step to setting up a client is to generate your personal private key.
+This is essentially a cryptographically generated string of bytes. It should be
+protected as a password. To generate an RSA key, you will use the &#8216;genrsa&#8217;
+command of the &#8216;openssl&#8217; tool.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>openssl genrsa -out client.key 4096
+</pre></div>
+</div>
+<p>This command generates a 4096 byte RSA key at client.key.</p>
+<p>Next, you will need to generate a certificate signing request (CSR). This will
+be used by Magnum to generate a signed certificate you will use to communicate
+with the Bay. It is used by the Bay to secure the connection and validate you
+are you who say you are.</p>
+<p>To generate a CSR for client authentication, openssl requires a config file
+that specifies a few values. Below is a simple template, just fill in the &#8216;CN&#8217;
+value with your name and save it as client.conf</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ cat &gt; client.conf &lt;&lt; END
+[req]
+distinguished_name = req_distinguished_name
+req_extensions     = req_ext
+prompt = no
+[req_distinguished_name]
+CN = Your Name
+[req_ext]
+extendedKeyUsage = clientAuth
+END
+</pre></div>
+</div>
+<p>Once you have client.conf, you can run the openssl &#8216;req&#8217; command to generate
+the CSR.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>openssl req -new -days 365 \
+    -config client.conf \
+    -key client.key \
+    -out client.csr
+</pre></div>
+</div>
+<p>Now that you have your client CSR, you can use the Magnum CLI to send it off
+to Magnum to get it signed.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum ca-sign --bay secure-k8sbay --csr client.csr &gt; client.crt
+</pre></div>
+</div>
+<p>The final piece you need to retrieve is the CA certificate for the bay. This
+is used by your native client to ensure you&#8217;re only communicating with hosts
+that Magnum set up.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>magnum ca-show --bay secure-k8sbay &gt; ca.crt
+</pre></div>
+</div>
+<p>You need to get kubectl, a kubernetes CLI tool, to communicate with the bay</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>wget https://github.com/kubernetes/kubernetes/releases/download/v1.0.4/kubernetes.tar.gz
+tar -xzvf kubernetes.tar.gz
+sudo cp -a kubernetes/platforms/linux/amd64/kubectl /usr/bin/kubectl
+</pre></div>
+</div>
+<p>Now let&#8217;s run some kubectl commands to check secure communication:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>KUBERNETES_URL=$(magnum bay-show secure-k8sbay |
+                 awk &#39;/ api_address /{print $4}&#39;)
+kubectl version --certificate-authority=ca.crt \
+                --client-key=client.key \
+                --client-certificate=client.crt -s $KUBERNETES_URL
+
+Client Version: version.Info{Major:&quot;1&quot;, Minor:&quot;0&quot;, GitVersion:&quot;v1.0.4&quot;, GitCommit:&quot;65d28d5fd12345592405714c81cd03b9c41d41d9&quot;, GitTreeState:&quot;clean&quot;}
+Server Version: version.Info{Major:&quot;1&quot;, Minor:&quot;0&quot;, GitVersion:&quot;v1.0.4&quot;, GitCommit:&quot;65d28d5fd12345592405714c81cd03b9c41d41d9&quot;, GitTreeState:&quot;clean&quot;}
+
+kubectl create -f redis-master.yaml --certificate-authority=ca.crt \
+                                    --client-key=client.key \
+                                    --client-certificate=client.crt -s $KUBERNETES_URL
+
+pods/test2
+
+kubectl get pods --certificate-authority=ca.crt \
+                 --client-key=client.key \
+                 --client-certificate=client.crt -s $KUBERNETES_URL
+NAME           READY     STATUS    RESTARTS   AGE
+redis-master   2/2       Running   0          1m
+</pre></div>
+</div>
+<p>Once you have all of these pieces, you can configure your native client. Below
+is an example for Docker.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>docker -H tcp://192.168.19.86:2376 --tlsverify \
+    --tlscacert ca.crt \
+    --tlskey client.key \
+    --tlscert client.crt
+    info
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="dev-kubernetes-load-balancer.html" class="btn btn-neutral" title="Using Kubernetes external load balancer feature" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bughunter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.3.dev2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,362 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>A Mesos cluster with Heat &mdash; bughunter 0.0.3.dev2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/logo.jpg"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bughunter 0.0.3.dev2 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> bughunter
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3.dev2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="dev-quickstart.html">Developer Quick-Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-manual-devstack.html">Manually Adding Magnum to DevStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-build-atomic-image.html">Building and updating Fedora Atomic image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-kubernetes-load-balancer.html">Using Kubernetes external load balancer feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-tls.html">Transport Layer Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heat-templates.html">Heat Template Definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../objects.html">Versioned Objects</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">bughunter</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>A Mesos cluster with Heat</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/dev/dev-heat-mesos.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="a-mesos-cluster-with-heat">
+<h1>A Mesos cluster with Heat<a class="headerlink" href="#a-mesos-cluster-with-heat" title="Permalink to this headline">¶</a></h1>
+<p>These <a class="reference external" href="https://wiki.openstack.org/wiki/Heat">Heat</a> templates will
+deploy a <a class="reference external" href="http://mesos.apache.org/">Mesos</a> cluster.</p>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="openstack">
+<h3>OpenStack<a class="headerlink" href="#openstack" title="Permalink to this headline">¶</a></h3>
+<p>These templates will work with the Kilo version of Heat.</p>
+</div>
+<div class="section" id="guest-image">
+<h3>Guest image<a class="headerlink" href="#guest-image" title="Permalink to this headline">¶</a></h3>
+<p>These templates will work with Ubuntu 14.04 base image with the
+following middleware pre-installed:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">docker</span></code></li>
+<li><code class="docutils literal"><span class="pre">zookeeper</span></code></li>
+<li><code class="docutils literal"><span class="pre">mesos</span></code></li>
+<li><code class="docutils literal"><span class="pre">marathon</span></code></li>
+</ul>
+</div>
+<div class="section" id="building-an-image">
+<h3>Building an image<a class="headerlink" href="#building-an-image" title="Permalink to this headline">¶</a></h3>
+<p>If you do not have a suitable image you can build one easily using one
+of two methods:</p>
+<div class="section" id="disk-image-builder">
+<h4>Disk Image Builder<a class="headerlink" href="#disk-image-builder" title="Permalink to this headline">¶</a></h4>
+<p><a class="reference external" href="http://git.openstack.org/cgit/openstack/magnum/tree/magnum/templates/heat-mesos/elements/">elements</a>
+directory contains <a class="reference external" href="http://docs.openstack.org/developer/diskimage-builder">diskimage-builder</a>
+elements to build an image which contains mesos and its frameworks
+required to use the heat template mesoscluster.yaml.</p>
+<p>Currently, only Ubuntu 14.04 is supported. An example Ubuntu based image
+can be built and uploaded to glance as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ sudo apt-get update
+$ sudo apt-get install git qemu-utils python-pip
+$ sudo pip install pyyaml
+
+$ git clone https://git.openstack.org/openstack/magnum
+$ git clone https://git.openstack.org/openstack/diskimage-builder.git
+$ git clone https://git.openstack.org/openstack/dib-utils.git
+$ export PATH=&quot;${PWD}/dib-utils/bin:$PATH&quot;
+$ export ELEMENTS_PATH=magnum/magnum/templates/heat-mesos/elements
+$ export DIB_RELEASE=trusty
+
+$ diskimage-builder/bin/disk-image-create ubuntu vm docker mesos \
+    -o ubuntu-mesos.qcow2
+
+$ glance image-create --name ubuntu-mesos --visibility public \
+    --disk-format=qcow2 --container-format=bare \
+    --property os_distro=ubuntu --file=ubuntu-mesos.qcow2
+</pre></div>
+</div>
+</div>
+<div class="section" id="docker">
+<h4>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h4>
+<p>Install docker using <code class="docutils literal"><span class="pre">curl</span> <span class="pre">-sSL</span> <span class="pre">http://get.docker.com</span> <span class="pre">|</span> <span class="pre">sudo</span> <span class="pre">bash</span></code> or
+use the appropriate system packaging.</p>
+<p>Use the provided <a class="reference external" href="http://git.openstack.org/cgit/openstack/magnum/tree/magnum/templates/heat-mesos/Dockerfile">Dockerfile</a> to build the image (it
+uses the same DIB scripts as above). The resultant image will be saved
+as <code class="docutils literal"><span class="pre">/tmp/ubuntu-mesos.qcow2</span></code></p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ sudo docker build -t magnum/mesos-builder .
+$ sudo docker run -v /tmp:/output --rm -ti --privileged magnum/mesos-builder
+...
+Image file /output/ubuntu-mesos.qcow2 created...
+$ glance image-create --name ubuntu-mesos --is-public True \
+        --disk-format=qcow2 --container-format=bare \
+        --property os_distro=ubuntu --file=/tmp/ubuntu-mesos.qcow2
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="creating-the-stack">
+<h2>Creating the stack<a class="headerlink" href="#creating-the-stack" title="Permalink to this headline">¶</a></h2>
+<p>Creating an environment file <code class="docutils literal"><span class="pre">local.yaml</span></code> with parameters specific to
+your environment:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>parameters:
+  ssh_key_name: testkey
+  external_network: public
+  dns_nameserver: 8.8.8.8
+  server_image: ubuntu-mesos
+</pre></div>
+</div>
+<p>And then create the stack, referencing that environment file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>heat stack-create -f mesoscluster.yaml -e local.yaml my-mesos-cluster
+</pre></div>
+</div>
+<p>You must provide value for:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">ssh_key_name</span></code></li>
+</ul>
+<p>You can optionally provide values for:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">server_image</span></code> (ubuntu-mesos if not provided)</li>
+<li><code class="docutils literal"><span class="pre">external_network</span></code> (public if not provided)</li>
+<li><code class="docutils literal"><span class="pre">dns_nameserver</span></code> (8.8.8.8 if not provided)</li>
+</ul>
+</div>
+<div class="section" id="interacting-with-mesos">
+<h2>Interacting with Mesos<a class="headerlink" href="#interacting-with-mesos" title="Permalink to this headline">¶</a></h2>
+<p>You can get the ip address of the Mesos master using the
+<code class="docutils literal"><span class="pre">heat</span> <span class="pre">output-show</span></code> command:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ heat output-show my-mesos-cluster mesos_master
+&quot;192.168.200.86&quot;
+</pre></div>
+</div>
+<p>You can ssh into that server as the <code class="docutils literal"><span class="pre">ubuntu</span></code> user:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ ssh ubuntu@192.168.200.86
+</pre></div>
+</div>
+<p>You can log into your slaves using the <code class="docutils literal"><span class="pre">ubuntu</span></code> user as well. You can
+get a list of slaves addresses by running:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ heat output-show my-mesos-cluster mesos_slaves
+[
+  &quot;192.168.200.182&quot;
+]
+</pre></div>
+</div>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>Docker containers can be deployed via Marathon&#8217;s REST API. Marathon is a
+mesos framework for long running applications.</p>
+<p>We can &#8216;post&#8217; a JSON app description to <a class="reference external" href="http://:8080/apps">http://:8080/apps</a> to deploy a
+Docker container.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>$ cat &gt; app.json &lt;&lt; END
+{
+  &quot;container&quot;: {
+    &quot;type&quot;: &quot;DOCKER&quot;,
+    &quot;docker&quot;: {
+      &quot;image&quot;: &quot;libmesos/ubuntu&quot;
+    }
+  },
+  &quot;id&quot;: &quot;ubuntu&quot;,
+  &quot;instances&quot;: 1,
+  &quot;cpus&quot;: 0.5,
+  &quot;mem&quot;: 512,
+  &quot;uris&quot;: [],
+  &quot;cmd&quot;: &quot;while sleep 10; do date -u +%T; done&quot;
+}
+END
+$ MASTER_IP=$(heat output-show my-mesos-cluster mesos_master | tr -d &#39;&quot;&#39;)
+$ curl -X POST -H &quot;Content-Type: application/json&quot; \
+    http://${MASTER_IP}:8080/v2/apps -d@app.json
+</pre></div>
+</div>
+<p>Using the Marathon web console (at <a class="reference external" href="http://:8080/">http://:8080/</a>), you will see the
+application you created.</p>
+</div>
+<div class="section" id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2015 Huawei Technologies Co.,LTD.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;); you may
+not use these files except in compliance with the License. You may
+obtain a copy of the License at</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>http://www.apache.org/licenses/LICENSE-2.0
+</pre></div>
+</div>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bughunter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.3.dev2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Using Proxies in magnum if running under firewall &mdash; bughunter 0.0.3.dev2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo.jpg"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bughunter 0.0.3.dev2 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> bughunter
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3.dev2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-quickstart.html">Developer Quick-Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-manual-devstack.html">Manually Adding Magnum to DevStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-build-atomic-image.html">Building and updating Fedora Atomic image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-kubernetes-load-balancer.html">Using Kubernetes external load balancer feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-tls.html">Transport Layer Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat-templates.html">Heat Template Definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="objects.html">Versioned Objects</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">bughunter</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Using Proxies in magnum if running under firewall</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/magnum-proxy.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-proxies-in-magnum-if-running-under-firewall">
+<h1>Using Proxies in magnum if running under firewall<a class="headerlink" href="#using-proxies-in-magnum-if-running-under-firewall" title="Permalink to this headline">¶</a></h1>
+<p>If you are running magnum behind a firewall then you may need a proxy
+for using services like docker, kubernetes and mesos. Use these steps
+when your firewall will not allow you to use those services without a
+proxy.</p>
+<p>NOTE: This feature only works with Swarm bays.</p>
+<div class="section" id="proxy-parameters-to-define-before-use">
+<h2>Proxy Parameters to define before use<a class="headerlink" href="#proxy-parameters-to-define-before-use" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>http-proxy</li>
+</ol>
+<p>Address of a proxy that will receive all HTTP requests and relay
+them. The format is a URL including a port number. For example:
+<a class="reference external" href="http://10.11.12.13:8000">http://10.11.12.13:8000</a> or <a class="reference external" href="http://abcproxy.com:8000">http://abcproxy.com:8000</a></p>
+<ol class="arabic simple" start="2">
+<li>https-proxy</li>
+</ol>
+<p>Address of a proxy that will receive all HTTPS requests and relay
+them. The format is a URL including a port number. For example:
+<a class="reference external" href="https://10.11.12.13:8000">https://10.11.12.13:8000</a> or <a class="reference external" href="https://abcproxy.com:8000">https://abcproxy.com:8000</a></p>
+<ol class="arabic simple" start="3">
+<li>no-proxy</li>
+</ol>
+<p>A comma separated list of IP addresses or hostnames that should bypass
+your proxy, and make conenctions directly.</p>
+<p>NOTE: You may not express networks/subnets. It only accepts names
+and ip addresses. Bad example: 192.168.0.0/28.</p>
+</div>
+<div class="section" id="steps-to-to-configure-proxies">
+<h2>Steps to to configure proxies.<a class="headerlink" href="#steps-to-to-configure-proxies" title="Permalink to this headline">¶</a></h2>
+<p>You can specify all three proxy parameteres while creating baymodel of any
+coe type. All of proxy parameters are optional.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>magnum baymodel-create &#8211;name swarmbaymodel </dt>
+<dd>&#8211;image-id fedora-21-atomic-5 &#8211;keypair-id testkey &#8211;external-network-id public &#8211;dns-nameserver 8.8.8.8 &#8211;flavor-id m1.small &#8211;coe swarm &#8211;http-proxy &lt;<a class="reference external" href="http://abc-proxy.com:8080">http://abc-proxy.com:8080</a>&gt; &#8211;https-proxy &lt;<a class="reference external" href="https://abc-proxy.com:8080">https://abc-proxy.com:8080</a>&gt; &#8211;no-proxy &lt;172.24.4.4,172.24.4.9,172.24.4.8&gt;</dd>
+</dl>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bughunter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.3.dev2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,293 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Versioned Objects &mdash; bughunter 0.0.3.dev2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/logo.jpg"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bughunter 0.0.3.dev2 documentation" href="index.html"/>
+        <link rel="prev" title="Heat Template Definitions" href="heat-templates.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> bughunter
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3.dev2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-quickstart.html">Developer Quick-Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-manual-devstack.html">Manually Adding Magnum to DevStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-build-atomic-image.html">Building and updating Fedora Atomic image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-kubernetes-load-balancer.html">Using Kubernetes external load balancer feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/dev-tls.html">Transport Layer Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat-templates.html">Heat Template Definitions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Versioned Objects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#object-version-testing">Object Version Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#object-change-example">Object Change Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">bughunter</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Versioned Objects</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/objects.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="versioned-objects">
+<h1>Versioned Objects<a class="headerlink" href="#versioned-objects" title="Permalink to this headline">¶</a></h1>
+<p>Magnum uses the <a class="reference external" href="http://docs.openstack.org/developer/oslo.versionedobjects/index.html">oslo.versionedobjects library</a> to
+construct an object model that can be communicated via RPC. These objects have
+a version history and functionality to convert from one version to a previous
+version. This allows for 2 different levels of the code to still pass objects
+to each other, as in the case of rolling upgrades.</p>
+<div class="section" id="object-version-testing">
+<h2>Object Version Testing<a class="headerlink" href="#object-version-testing" title="Permalink to this headline">¶</a></h2>
+<p>In order to ensure object versioning consistency is maintained,
+oslo.versionedobjects has a fixture to aid in testing object versioning.
+<a class="reference external" href="http://docs.openstack.org/developer/oslo.versionedobjects/api/fixture.html#oslo_versionedobjects.fixture.ObjectVersionChecker">oslo.versionedobjects.fixture.ObjectVersionChecker</a>
+generates fingerprints of each object, which is a combination of the current
+version number of the object, along with a hash of the RPC-critical parts of
+the object (fields and remotable methods).</p>
+<p>The tests hold a static mapping of the fingerprints of all objects. When an
+object is changed, the hash generated in the test will differ from that held in
+the static mapping. This will signal to the developer that the version of the
+object needs to be increased. Following this version increase, the fingerprint
+that is then generated by the test can be copied to the static mapping in the
+tests. This symbolizes that if the code change is approved, this is the new
+state of the object to compare against.</p>
+<div class="section" id="object-change-example">
+<h3>Object Change Example<a class="headerlink" href="#object-change-example" title="Permalink to this headline">¶</a></h3>
+<p>The following example shows the unit test workflow when changing an object
+(Container was updated to hold a new &#8216;foo&#8217; field):</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>tox -e py27 magnum.tests.unit.objects.test_objects
+</pre></div>
+</div>
+<p>This results in a unit test failure with the following output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>testtools.matchers._impl.MismatchError: !=:
+reference = {&#39;Container&#39;: &#39;1.0-e12affbba5f8a748882a3ae98aced282&#39;}
+actual    = {&#39;Container&#39;: &#39;1.0-22b40e8eed0414561ca921906b189820&#39;}
+: Fields or remotable methods in some objects have changed. Make sure the versions of the objects has been bumped, and update the hashes in the static fingerprints tree (object_data). For more information, read http://docs.openstack.org/developer/magnum/objects.html.
+</pre></div>
+</div>
+<p>This is an indication that me adding the &#8216;foo&#8217; field to Container means I need
+to bump the version of Container, so I increase the version and add a comment
+saying what I changed in the new version:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="nd">@base.MagnumObjectRegistry.register</span>
+<span class="k">class</span> <span class="nc">Container</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">MagnumPersistentObject</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">MagnumObject</span><span class="p">,</span>
+                <span class="n">base</span><span class="o">.</span><span class="n">MagnumObjectDictCompat</span><span class="p">):</span>
+    <span class="c1"># Version 1.0: Initial version</span>
+    <span class="c1"># Version 1.1: Added &#39;foo&#39; field</span>
+    <span class="n">VERSION</span> <span class="o">=</span> <span class="s1">&#39;1.1&#39;</span>
+</pre></div>
+</div>
+<p>Now that I have updated the version, I will run the tests again and let the
+test tell me the fingerprint that I now need to put in the static tree:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>testtools.matchers._impl.MismatchError: !=:
+reference = {&#39;Container&#39;: &#39;1.0-e12affbba5f8a748882a3ae98aced282&#39;}
+actual    = {&#39;Container&#39;: &#39;1.1-22b40e8eed0414561ca921906b189820&#39;}
+: Fields or remotable methods in some objects have changed. Make sure the versions of the objects has been bumped, and update the hashes in the static fingerprints tree (object_data). For more information, read http://docs.openstack.org/developer/magnum/objects.html.
+</pre></div>
+</div>
+<p>I can now copy the new fingerprint needed
+(1.1-22b40e8eed0414561ca921906b189820), to the object_data map within
+magnum/tests/unit/objects/test_objects.py:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">object_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Bay&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0-35edde13ad178e9419e7ea8b6d580bcd&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;BayLock&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0-7d1eb08cf2070523bd210369c7a2e076&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;BayModel&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0-06863f04ab4b98307e3d1b736d3137bf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Container&#39;</span><span class="p">:</span> <span class="s1">&#39;1.1-22b40e8eed0414561ca921906b189820&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MyObj&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0-b43567e512438205e32f4e95ca616697&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Node&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0-30943e6e3387a2fae7490b57c4239a17&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Pod&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0-69b579203c6d726be7878c606626e438&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ReplicationController&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0-782b7deb9307b2807101541b7e58b8a2&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Service&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0-d4b8c0f3a234aec35d273196e18f7ed1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;X509KeyPair&#39;</span><span class="p">:</span> <span class="s1">&#39;1.0-fd008eba0fbc390e0e5da247bba4eedd&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Running the unit tests now shows no failure.</p>
+<p>If I did not update the version, and rather just copied the new hash to the
+object_data map, the review would show the hash (but not the version) was
+updated in object_data. At that point, a reviewer should point this out, and
+mention that the object version needs to be updated.</p>
+<p>If a remotable method were added/changed, the same process is followed, because
+this will also cause a hash change.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="heat-templates.html" class="btn btn-neutral" title="Heat Template Definitions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bughunter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.3.dev2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

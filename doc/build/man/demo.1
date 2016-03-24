@@ -1,0 +1,2960 @@
+.\" Man page generated from reStructuredText.
+.
+.TH "DEMO" "1" "March 24, 2016" "0.0.3.dev2" "bughunter"
+.SH NAME
+demo \- demo Documentation
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.SH SUBTITLE
+.SS SectionTitle
+.sp
+我是李浩然
+for deploying and managing containers as first class resources in OpenStack.
+.INDENT 0.0
+.IP \(bu 2
+\fBFree software:\fP under the \fI\%Apache license\fP
+.IP \(bu 2
+\fBSource:\fP \fI\%http://git.openstack.org/cgit/openstack/magnum\fP
+.IP \(bu 2
+\fBBlueprints:\fP \fI\%https://blueprints.launchpad.net/magnum\fP
+.IP \(bu 2
+\fBBugs:\fP \fI\%http://bugs.launchpad.net/magnum\fP
+.IP \(bu 2
+\fBREST Client:\fP \fI\%http://git.openstack.org/cgit/openstack/python\-magnumclient\fP
+.UNINDENT
+.SS BugHunter
+.sp
+There are several different types of objects in the magnum system:
+.INDENT 0.0
+.IP \(bu 2
+\fBBay:\fP A collection of node objects where work is scheduled
+.IP \(bu 2
+\fBBayModel:\fP An object stores template information about the bay which is
+used to create new bays consistently
+.IP \(bu 2
+\fBNode:\fP A baremetal or virtual machine where work executes
+.IP \(bu 2
+\fBPod:\fP A collection of containers running on one physical or virtual
+machine
+.IP \(bu 2
+\fBService:\fP An abstraction which defines a logical set of pods and a policy
+by which to access them
+.IP \(bu 2
+\fBReplicationController:\fP An abstraction for managing a group of pods to
+ensure a specified number of resources are running
+.IP \(bu 2
+\fBContainer:\fP A Docker container
+.UNINDENT
+.sp
+Two binaries work together to compose the magnum system.  The first binary
+(accessed by the python\-magnumclient code) is the magnum\-api REST server.  The
+REST server may run as one process or multiple processes.  When a REST request
+is sent to the client API, the request is sent via AMQP to the
+magnum\-conductor process.  The REST server is horizontally scalable.  At this
+time, the conductor is limited to one process, but we intend to add horizontal
+scalability to the conductor as well.
+.sp
+The magnum\-conductor process runs on a controller machine and connects to a
+Kubernetes or Docker REST API endpoint.  The Kubernetes and Docker REST API
+endpoints are managed by the bay object.
+.sp
+When service or pod objects are created, Kubernetes may be directly contacted
+via the Kubernetes REST API.  When container objects are acted upon, the
+Docker REST API may be directly contacted.
+.SS Features
+.INDENT 0.0
+.IP \(bu 2
+Abstractions for bays, containers, nodes, pods, replication controllers, and
+services
+.IP \(bu 2
+Integration with Kubernetes and Docker for backend container technology
+.IP \(bu 2
+Integration with Keystone for multi\-tenant security
+.IP \(bu 2
+Integration with Neutron for Kubernetes multi\-tenancy network security
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+def foo():
+    print "I love you"
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+#!/usr/bin/env pyhton
+#\-*\- coding:utf\-8 \-*\-
+def sayhello():
+	print \(aqhello\(aq
+
+if __name__ == \(aq__main__\(aq:
+	sayhello()
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.TS
+center;
+|l|l|l|.
+_
+T{
+node
+T}	T{
+func
+T}	T{
+ip
+T}
+_
+T{
+compute1
+T}	T{
+nova
+T}	T{
+192.168.1.10
+T}
+_
+.TE
+.SS Frozen Delights!
+.TS
+center;
+|l|l|l|.
+_
+T{
+Treat
+T}	T{
+Quality
+T}	T{
+Decription
+T}
+_
+T{
+BugHunter
+T}	T{
+100
+T}	T{
+On a stick
+T}
+_
+.TE
+.SS Frozen Delights!
+.TS
+center;
+|l|l|l|.
+_
+T{
+Treat
+T}	T{
+Quality
+T}	T{
+Description
+T}
+_
+T{
+Albatross
+T}	T{
+2.99
+T}	T{
+I love you
+T}
+_
+.TE
+.SS Test
+.INDENT 0.0
+.IP \(bu 2
+列表第一集
+.INDENT 2.0
+.IP \(bu 2
+第二级
+.INDENT 2.0
+.IP \(bu 2
+第三级
+.UNINDENT
+.IP \(bu 2
+第二级的另一个项目
+.UNINDENT
+.UNINDENT
+.sp
+1. 数字
+a. 小写字母
+A. 大写字母
+i) 小写罗马数字
+(I) 大写罗马数字
+.sp
+\fII love you\fP
+.sp
+\fBI love you\fP
+.sp
+buzz
+.INDENT 0.0
+.INDENT 2.5
+[image]
+chart 1—1 bamboo.UNINDENT
+.UNINDENT
+.sp
+\fI\%bamboo\fP
+.sp
+H\s-2\d2\u\s0O
+.sp
+E = mc\s-2\u2\d\s0
+.SS Paragraph
+.sp
+This is a paragraph. It\(aqs quite
+short.
+.INDENT 0.0
+.INDENT 3.5
+This paragraph will result in an indented block of
+text,typically used for quoting other text.How about
+the too long paragraph.Oh!I know!
+.UNINDENT
+.UNINDENT
+.sp
+this is another one.
+.INDENT 0.0
+.IP \(bu 2
+\fBSource:\fP \fI\%http://git.openstack.org/cgit/openstack/magnum\fP
+.IP \(bu 2
+\fBBlueprints:\fP \fI\%https://blueprints.launchpad.net/magnum\fP
+.IP \(bu 2
+\fBBugs:\fP \fI\%http://bugs.launchpad.net/magnum\fP
+.UNINDENT
+.sp
+thisis\fIone\fPworld
+.sp
+\fBdouble * black\-quotes\fP
+.sp
+\fB*\fP
+.sp
+* nidate
+.sp
+Ilvoe*you
+.INDENT 0.0
+.IP 1. 3
+number
+.IP 2. 3
+upper\-case letters
+and it goes over many times
+.sp
+with two paragraphs and all!
+.UNINDENT
+.INDENT 0.0
+.IP a. 3
+lower case letters
+.INDENT 3.0
+.IP 1. 3
+with a sub\-list starting at a different number
+.IP 2. 3
+make sure the number are in the correct sequence though!
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.IP I. 5
+upper\-case roman
+.UNINDENT
+.INDENT 0.0
+.IP i. 5
+lower roman
+.UNINDENT
+.INDENT 0.0
+.IP 1. 3
+numbers again
+.UNINDENT
+.INDENT 0.0
+.IP 1. 3
+and again
+.UNINDENT
+.INDENT 0.0
+.IP \(bu 2
+abullet point using "*"
+.INDENT 2.0
+.IP \(bu 2
+a sub\-list using "\-"
+.INDENT 2.0
+.IP \(bu 2
+yet another sub\-list
+.UNINDENT
+.IP \(bu 2
+another item
+.UNINDENT
+.UNINDENT
+.IP [CIT2002] 5
+A citation
+(as often used in journals).
+.INDENT 0.0
+.TP
+.B what
+Definition lists associate a term with a definition.
+.TP
+.B \fIhow\fP
+The term is a one\-line phrase, and the definition is one or more
+paragraphs or body elements, indented relative to the term.
+blank lines are not allowed between term and definition.
+.UNINDENT
+.sp
+An example:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+  Whitespace, newlines, blank lines, and all kinds of markup
+(like *this* or \ethis) is presented by literal nlocks.
+Lookie here, I\(aqve dropped an indentation level
+(but not far enough)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+no more example
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+this is preformatted text, and the
+last "::" paragraph is removed
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Chapter 1 Title
+.SS Section 1.1 Title
+.SS Subsection 1.1.1 Title
+.SS Section 1.2 Title
+.SS Chapter 2 Title
+.sp
+\fI\%Test\fP
+
+.sp
+.ce
+----
+
+.ce 0
+.sp
+.sp
+\fI\%[CIT2002]\fP
+.SS Developer Info
+.SS Developer Quick\-Start
+.sp
+This is a quick walkthrough to get you started developing code for magnum.
+This assumes you are already familiar with submitting code reviews to an
+OpenStack project.
+.sp
+\fBSEE ALSO:\fP
+.INDENT 0.0
+.INDENT 3.5
+\fI\%http://docs.openstack.org/infra/manual/developers.html\fP
+.UNINDENT
+.UNINDENT
+.sp
+test:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+test
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Setup Dev Environment
+.sp
+Install OS\-specific prerequisites:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# Ubuntu/Debian:
+sudo apt\-get update
+sudo apt\-get install \-y python\-dev libssl\-dev libxml2\-dev \e
+                        libmysqlclient\-dev libxslt\-dev libpq\-dev git \e
+                        libffi\-dev gettext build\-essential
+
+# Fedora/RHEL:
+sudo yum install \-y python\-devel openssl\-devel mysql\-devel \e
+                    libxml2\-devel libxslt\-devel postgresql\-devel git \e
+                    libffi\-devel gettext gcc
+
+# openSUSE/SLE 12:
+sudo zypper \-\-non\-interactive install git libffi\-devel \e
+                    libmysqlclient\-devel libopenssl\-devel libxml2\-devel \e
+                    libxslt\-devel postgresql\-devel python\-devel \e
+                    gettext\-runtime
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Install pip:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+curl \-s https://bootstrap.pypa.io/get\-pip.py | sudo python
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Install common prerequisites:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo pip install virtualenv flake8 tox testrepository git\-review
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+You may need to explicitly upgrade virtualenv if you\(aqve installed the one
+from your OS distribution and it is too old (tox will complain). You can
+upgrade it individually, if you need to:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo pip install \-U virtualenv
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Magnum source code should be pulled directly from git:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# from your home or source directory
+cd ~
+git clone https://git.openstack.org/openstack/magnum
+cd magnum
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+All unit tests should be run using tox. To run magnum\(aqs entire test suite:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# run all tests (unit and pep8)
+tox
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To run a specific test, use a positional argument for the unit tests:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# run a specific test for Python 2.7
+tox \-epy27 \-\- test_conductor
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+You may pass options to the test programs using positional arguments:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# run all the Python 2.7 unit tests (in parallel!)
+tox \-epy27 \-\- \-\-parallel
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To run only the pep8/flake8 syntax and style checks:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+tox \-epep8
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To discover and interact with templates, please refer to
+\fI\%http://docs.openstack.org/developer/magnum/dev/dev\-bay\-template\-example.html\fP
+.SS Exercising the Services Using Devstack
+.sp
+Devstack can be configured to enable magnum support. It is easy to develop
+magnum with the devstack environment. Magnum depends on nova, glance, heat and
+neutron to create and schedule virtual machines to simulate bare\-metal (full
+bare\-metal support is under active development).
+.sp
+Note: Running devstack within a virtual machine with magnum enabled is not
+recommended at this time.
+.sp
+This session has only been tested on Ubuntu 14.04 (Trusty) and Fedora 20/21.
+We recommend users to select one of them if it is possible.
+.sp
+For in\-depth guidance on adding magnum manually to a devstack instance, please
+refer to the \fI\%http://docs.openstack.org/developer/magnum/dev/dev\-manual\-devstack.html\fP
+.sp
+Clone devstack:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# Create a root directory for devstack if needed
+sudo mkdir \-p /opt/stack
+sudo chown $USER /opt/stack
+
+git clone https://git.openstack.org/openstack\-dev/devstack /opt/stack/devstack
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+We will run devstack with minimal local.conf settings required to enable
+magnum, heat, and neutron (neutron is enabled by default in devstack since
+Kilo, and heat is enabled by the magnum plugin):
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cat > /opt/stack/devstack/local.conf << END
+[[local|localrc]]
+DATABASE_PASSWORD=password
+RABBIT_PASSWORD=password
+SERVICE_TOKEN=password
+SERVICE_PASSWORD=password
+ADMIN_PASSWORD=password
+# magnum requires the following to be set correctly
+PUBLIC_INTERFACE=eth1
+enable_plugin magnum https://git.openstack.org/openstack/magnum
+# Enable barbican service and use it to store TLS certificates
+# For details http://docs.openstack.org/developer/magnum/dev/dev\-tls.html
+enable_plugin barbican https://git.openstack.org/openstack/barbican
+VOLUME_BACKING_FILE_SIZE=20G
+END
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Note: Update PUBLIC_INTERFACE as appropriate for your system.
+.sp
+Optionally, you can enable ceilometer in devstack. If ceilometer is enabled,
+magnum will periodically send metrics to ceilometer:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cat >> /opt/stack/devstack/local.conf << END
+enable_plugin ceilometer https://git.openstack.org/openstack/ceilometer
+END
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+More devstack configuration information can be found at
+\fI\%http://docs.openstack.org/developer/devstack/configuration.html\fP
+.sp
+More neutron configuration information can be found at
+\fI\%http://docs.openstack.org/developer/devstack/guides/neutron.html\fP
+.sp
+Run devstack:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cd /opt/stack/devstack
+\&./stack.sh
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Note: This will take a little extra time when the Fedora Atomic micro\-OS
+image is downloaded for the first time.
+.sp
+At this point, two magnum process (magnum\-api and magnum\-conductor) will be
+running on devstack screens. If you make some code changes and want to
+test their effects, just stop and restart magnum\-api and/or magnum\-conductor.
+.sp
+Prepare your session to be able to use the various openstack clients including
+magnum, neutron, and glance. Create a new shell, and source the devstack openrc
+script:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+source /opt/stack/devstack/openrc admin admin
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Magnum has been tested with the Fedora Atomic micro\-OS and CoreOS. Magnum will
+likely work with other micro\-OS platforms, but each requires individual
+support in the heat template.
+.sp
+The Fedora Atomic micro\-OS image will automatically be added to glance.  You
+can add additional images manually through glance. To verify the image created
+when installing devstack use:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+glance \-v image\-list
+
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+| ID                                   | Name                            | Disk Format | Container Format | Size      | Status |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+| 7f5b6a15\-f2fd\-4552\-aec5\-952c6f6d4bc7 | cirros\-0.3.4\-x86_64\-uec         | ami         | ami              | 25165824  | active |
+| bd3c0f92\-669a\-4390\-a97d\-b3e0a2043362 | cirros\-0.3.4\-x86_64\-uec\-kernel  | aki         | aki              | 4979632   | active |
+| 843ce0f7\-ae51\-4db3\-8e74\-bcb860d06c55 | cirros\-0.3.4\-x86_64\-uec\-ramdisk | ari         | ari              | 3740163   | active |
+| 02c312e3\-2d30\-43fd\-ab2d\-1d25622c0eaa | fedora\-21\-atomic\-5              | qcow2       | bare             | 770179072 | active |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To list the available commands and resources for magnum, use:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum help
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To list out the health of the internal services, namely conductor, of magnum, use:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum service\-list
+
++\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-+
+| id | host                               | binary           | state |
++\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-+
+| 1  | oxy\-dev.hq1\-0a5a3c02.hq1.abcde.com | magnum\-conductor | up    |
++\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Building a Kubernetes Bay
+.sp
+Create a keypair for use with the baymodel:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+test \-f ~/.ssh/id_rsa.pub || ssh\-keygen \-t rsa \-N "" \-f ~/.ssh/id_rsa
+nova keypair\-add \-\-pub\-key ~/.ssh/id_rsa.pub testkey
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Create a baymodel. This is similar in nature to a flavor and describes
+to magnum how to construct the bay. The coe (Container Orchestration Engine)
+and keypair need to be specified for the baymodel:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum baymodel\-create \-\-name k8sbaymodel \e
+                       \-\-image\-id fedora\-21\-atomic\-5 \e
+                       \-\-keypair\-id testkey \e
+                       \-\-external\-network\-id public \e
+                       \-\-dns\-nameserver 8.8.8.8 \e
+                       \-\-flavor\-id m1.small \e
+                       \-\-docker\-volume\-size 5 \e
+                       \-\-network\-driver flannel \e
+                       \-\-coe kubernetes
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Create a bay. Use the baymodel name as a template for bay creation.
+This bay will result in one master kubernetes node and one minion node:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-create \-\-name k8sbay \-\-baymodel k8sbaymodel \-\-node\-count 1
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Bays will have an initial status of CREATE_IN_PROGRESS.  Magnum will update
+the status to CREATE_COMPLETE when it is done creating the bay.  Do not create
+containers, pods, services, or replication controllers before magnum finishes
+creating the bay. They will likely not be created, and may cause magnum to
+become confused.
+.sp
+The existing bays can be listed as follows:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-list
+
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| uuid                                 | name    | node_count | status          |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| 9dccb1e6\-02dc\-4e2b\-b897\-10656c5339ce | k8sbay  | 1          | CREATE_COMPLETE |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+More detailed information for a given bay is obtained via:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-show k8sbay
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+After a bay is created, you can dynamically add/remove node(s) to/from the bay
+by updating the node_count attribute. For example, to add one more node:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-update k8sbay replace node_count=2
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Bays in the process of updating will have a status of UPDATE_IN_PROGRESS.
+Magnum will update the status to UPDATE_COMPLETE when it is done updating
+the bay.
+.sp
+Note: Reducing node_count will remove all the existing pods on the nodes that
+are deleted. If you choose to reduce the node_count, magnum will first try to
+remove empty nodes with no pods running on them. If you reduce node_count by
+more than the number of empty nodes, magnum must remove nodes that have running
+pods on them. This action will delete those pods. We strongly recommend using a
+replication controller before reducing the node_count so any removed pods can
+be automatically recovered on your remaining nodes.
+.sp
+Heat can be used to see detailed information on the status of a stack or
+specific bay:
+.sp
+To check the list of all bay stacks:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+heat stack\-list
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To check an individual bay\(aqs stack:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+heat stack\-show <stack\-name or stack_id>
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Monitoring bay status in detail (e.g., creating, updating):
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+BAY_HEAT_NAME=$(heat stack\-list | awk "/\esk8sbay\-/{print \e$4}")
+echo ${BAY_HEAT_NAME}
+heat resource\-list ${BAY_HEAT_NAME}
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Using Kubernetes Bay
+.sp
+Note: For the following examples, only one minion node is required in the
+k8s bay created previously.
+.sp
+Kubernetes provides a number of examples you can use to check that things are
+working. You may need to clone kubernetes using:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+wget https://github.com/kubernetes/kubernetes/releases/download/v1.0.1/kubernetes.tar.gz
+tar \-xvzf kubernetes.tar.gz
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Note: We do not need to install Kubernetes, we just need the example file
+from the tarball.
+.sp
+Here\(aqs how to set up the replicated redis example. First, create
+a pod for the redis\-master:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cd kubernetes/examples/redis
+magnum pod\-create \-\-manifest ./redis\-master.yaml \-\-bay k8sbay
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Now create a service to provide a discoverable endpoint for the redis
+sentinels in the cluster:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum coe\-service\-create \-\-manifest ./redis\-sentinel\-service.yaml \-\-bay k8sbay
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To make it a replicated redis cluster create replication controllers for the
+redis slaves and sentinels:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sed \-i \(aqs/\e(replicas: \e)1/\e1 2/\(aq redis\-controller.yaml
+magnum rc\-create \-\-manifest ./redis\-controller.yaml \-\-bay k8sbay
+
+sed \-i \(aqs/\e(replicas: \e)1/\e1 2/\(aq redis\-sentinel\-controller.yaml
+magnum rc\-create \-\-manifest ./redis\-sentinel\-controller.yaml \-\-bay k8sbay
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Full lifecycle and introspection operations for each object are supported.
+For example, magnum bay\-create, magnum baymodel\-delete, magnum rc\-show,
+magnum coe\-service\-list.
+.sp
+Now there are four redis instances (one master and three slaves) running
+across the bay, replicating data between one another.
+.sp
+Run the bay\-show command to get the IP of the bay host on which the
+redis\-master is running:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-show k8sbay
+
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| Property           | Value                                                      |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| status             | CREATE_COMPLETE                                            |
+| uuid               | 481685d2\-bc16\-4daf\-9aac\-9e830c7da3f7                       |
+| status_reason      | Stack CREATE completed successfully                        |
+| created_at         | 2015\-09\-22T20:02:39+00:00                                  |
+| updated_at         | 2015\-09\-22T20:05:00+00:00                                  |
+| bay_create_timeout | 0                                                          |
+| api_address        | 192.168.19.84:8080                                         |
+| baymodel_id        | 194a4b7e\-0125\-4956\-8660\-7551469ae1ed                       |
+| node_count         | 1                                                          |
+| node_addresses     | [u\(aq192.168.19.86\(aq]                                         |
+| master_count       | 1                                                          |
+| discovery_url      | https://discovery.etcd.io/373452625d4f52263904584b9d3616b1 |
+| name               | k8sbay                                                     |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+The output here indicates the redis\-master is running on the bay host with IP
+address 192.168.19.86. To access the redis master:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+ssh minion@192.168.19.86
+REDIS_ID=$(sudo docker ps | grep redis:v1 | grep k8s_master | awk \(aq{print $1}\(aq)
+sudo docker exec \-i \-t $REDIS_ID redis\-cli
+
+127.0.0.1:6379> set replication:test true
+OK
+^D
+
+exit  # Log out of the host
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Log into one of the other container hosts and access a redis slave from it.
+You can use \fInova list\fP to enumerate the kube\-minions. For this example we
+will use the same host as above:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+ssh minion@192.168.19.86
+REDIS_ID=$(sudo docker ps | grep redis:v1 | grep k8s_redis | awk \(aq{print $1}\(aq)
+sudo docker exec \-i \-t $REDIS_ID redis\-cli
+
+127.0.0.1:6379> get replication:test
+"true"
+^D
+
+exit  # Log out of the host
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Additional useful commands from a given minion:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker ps  # View Docker containers on this minion
+kubectl get po  # Get pods
+kubectl get rc  # Get replication controllers
+kubectl get svc  # Get services
+kubectl get nodes  # Get nodes
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+After you finish using the bay, you want to delete it. A bay can be deleted as
+follows:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-delete k8sbay
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Building and Using a Swarm Bay
+.sp
+Create a baymodel. It is very similar to the Kubernetes baymodel, except for
+the absence of some Kubernetes\-specific arguments and the use of \(aqswarm\(aq
+as the coe:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum baymodel\-create \-\-name swarmbaymodel \e
+                       \-\-image\-id fedora\-21\-atomic\-5 \e
+                       \-\-keypair\-id testkey \e
+                       \-\-external\-network\-id public \e
+                       \-\-dns\-nameserver 8.8.8.8 \e
+                       \-\-flavor\-id m1.small \e
+                       \-\-coe swarm
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Note: If you are using Magnum behind a firewall then see:
+.sp
+\fI\%http://docs.openstack.org/developer/magnum/magnum\-proxy.html\fP
+.sp
+Finally, create the bay. Use the baymodel \(aqswarmbaymodel\(aq as a template for
+bay creation. This bay will result in one swarm manager node and two extra
+agent nodes:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-create \-\-name swarmbay \-\-baymodel swarmbaymodel \-\-node\-count 2
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Now that we have a swarm bay we can start interacting with it:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-show swarmbay
+
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| Property      | Value                                    |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| status        | CREATE_COMPLETE                          |
+| uuid          | eda91c1e\-6103\-45d4\-ab09\-3f316310fa8e     |
+| created_at    | 2015\-04\-20T19:05:27+00:00                |
+| updated_at    | 2015\-04\-20T19:06:08+00:00                |
+| baymodel_id   | a93ee8bd\-fec9\-4ea7\-ac65\-c66c1dba60af     |
+| node_count    | 2                                        |
+| discovery_url |                                          |
+| name          | swarmbay                                 |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Next we will create a container in this bay. This container will ping the
+address 8.8.8.8 four times:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum container\-create \-\-name test\-container \e
+                        \-\-image docker.io/cirros:latest \e
+                        \-\-bay swarmbay \e
+                        \-\-command "ping \-c 4 8.8.8.8"
+
++\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| Property   | Value                                  |
++\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| uuid       | 25485358\-ae9b\-49d1\-a1e1\-1af0a7c3f911   |
+| links      | ...                                    |
+| bay_uuid   | eda91c1e\-6103\-45d4\-ab09\-3f316310fa8e   |
+| updated_at | None                                   |
+| image      | cirros                                 |
+| command    | ping \-c 4 8.8.8.8                      |
+| created_at | 2015\-04\-22T20:21:11+00:00              |
+| name       | test\-container                         |
++\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+At this point the container exists but it has not been started yet. To start
+it and check its output run the following:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum container\-start test\-container
+magnum container\-logs test\-container
+
+PING 8.8.8.8 (8.8.8.8): 56 data bytes
+64 bytes from 8.8.8.8: seq=0 ttl=40 time=25.513 ms
+64 bytes from 8.8.8.8: seq=1 ttl=40 time=25.348 ms
+64 bytes from 8.8.8.8: seq=2 ttl=40 time=25.226 ms
+64 bytes from 8.8.8.8: seq=3 ttl=40 time=25.275 ms
+
+\-\-\- 8.8.8.8 ping statistics \-\-\-
+4 packets transmitted, 4 packets received, 0% packet loss
+round\-trip min/avg/max = 25.226/25.340/25.513 ms
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Now that we\(aqre done with the container we can delete it:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum container\-delete test\-container
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Building and Using a Mesos Bay
+.sp
+Provisioning a mesos bay requires a Ubuntu\-based image with some packages
+pre\-installed. To build and upload such image, please refer to
+\fI\%http://docs.openstack.org/developer/magnum/dev/dev\-heat\-mesos.html\fP
+.sp
+Then, create a baymodel by using \(aqmesos\(aq as the coe, with the rest of arguments
+similar to the Kubernetes baymodel:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum baymodel\-create \-\-name mesosbaymodel \-\-image\-id ubuntu\-mesos \e
+                       \-\-keypair\-id testkey \e
+                       \-\-external\-network\-id public \e
+                       \-\-dns\-nameserver 8.8.8.8 \e
+                       \-\-flavor\-id m1.small \e
+                       \-\-coe mesos
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Finally, create the bay. Use the baymodel \(aqmesosbaymodel\(aq as a template for
+bay creation. This bay will result in one mesos master node and two mesos
+slave nodes:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-create \-\-name mesosbay \-\-baymodel mesosbaymodel \-\-node\-count 2
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Now that we have a mesos bay we can start interacting with it. First we need
+to make sure the bay\(aqs status is \(aqCREATE_COMPLETE\(aq:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ magnum bay\-show mesosbay
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| Property           | Value                                |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| status             | CREATE_COMPLETE                      |
+| uuid               | ff727f0d\-72ca\-4e2b\-9fef\-5ec853d74fdf |
+| status_reason      | Stack CREATE completed successfully  |
+| created_at         | 2015\-06\-09T20:21:43+00:00            |
+| updated_at         | 2015\-06\-09T20:28:18+00:00            |
+| bay_create_timeout | 0                                    |
+| api_address        | 172.24.4.115                         |
+| baymodel_id        | 92dbda62\-32d4\-4435\-88fc\-8f42d514b347 |
+| node_count         | 2                                    |
+| node_addresses     | [u\(aq172.24.4.116\(aq, u\(aq172.24.4.117\(aq]   |
+| master_count       | 1                                    |
+| discovery_url      | None                                 |
+| name               | mesosbay                             |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Next we will create a container in this bay by using the REST API of Marathon.
+This container will ping the address 8.8.8.8:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ cat > mesos.json << END
+{
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "cirros"
+    }
+  },
+  "id": "ubuntu",
+  "instances": 1,
+  "cpus": 0.5,
+  "mem": 512,
+  "uris": [],
+  "cmd": "ping 8.8.8.8"
+}
+END
+$ MASTER_IP=$(magnum bay\-show mesosbay | awk \(aq/ api_address /{print $4}\(aq)
+$ curl \-X POST \-H "Content\-Type: application/json" \e
+    http://${MASTER_IP}:8080/v2/apps \-d@mesos.json
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To check application and task status:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ curl http://${MASTER_IP}:8080/v2/apps
+$ curl http://${MASTER_IP}:8080/v2/tasks
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+You can access to the Mesos web page at http://<master>:5050/ and Marathon web
+console at http://<master>:8080/.
+.SS Building Developer Documentation
+.sp
+To build the documentation locally (e.g., to test documentation changes
+before uploading them for review) chdir to the magnum root folder and
+run tox:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+tox \-edocs
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Note: The first time you run this will take some extra time as it
+creates a virtual environment to run in.
+.sp
+When complete, the documentation can be accessed from:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+doc/build/html/index.html
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Manually Adding Magnum to DevStack
+.sp
+If you are getting started with magnum it is recommended you follow the
+dev\-quickstart to get up and running with magnum. This guide covers
+a more in\-depth process to setup magnum with devstack.
+.sp
+Magnum depends on nova, glance, heat, barbican, and neutron to create and
+schedule virtual machines to simulate bare\-metal. Full bare\-metal support
+is still under active development.
+.sp
+This session has only been tested on Ubuntu 14.04 (Trusty) and Fedora 20/21.
+We recommend users to select one of them if it is possible.
+.sp
+Clone devstack:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cd ~
+git clone https://git.openstack.org/openstack\-dev/devstack
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Configure devstack with the minimal settings required to enable heat
+and neutron:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cd devstack
+cat > local.conf << END
+[[local|localrc]]
+# Modify to your environment
+FLOATING_RANGE=192.168.1.224/27
+PUBLIC_NETWORK_GATEWAY=192.168.1.225
+PUBLIC_INTERFACE=em1
+
+# Credentials
+ADMIN_PASSWORD=password
+DATABASE_PASSWORD=password
+RABBIT_PASSWORD=password
+SERVICE_PASSWORD=password
+SERVICE_TOKEN=password
+
+enable_service rabbit
+
+# Ensure we are using neutron networking rather than nova networking
+# (Neutron is enabled by default since Kilo)
+disable_service n\-net
+enable_service q\-svc
+enable_service q\-agt
+enable_service q\-dhcp
+enable_service q\-l3
+enable_service q\-meta
+enable_service neutron
+
+# Enable heat services
+enable_service h\-eng
+enable_service h\-api
+enable_service h\-api\-cfn
+enable_service h\-api\-cw
+
+# Enable barbican services
+enable_plugin barbican https://git.openstack.org/openstack/barbican
+
+FIXED_RANGE=10.0.0.0/24
+
+Q_USE_SECGROUP=True
+ENABLE_TENANT_VLANS=True
+TENANT_VLAN_RANGE=
+
+PHYSICAL_NETWORK=public
+OVS_PHYSICAL_BRIDGE=br\-ex
+
+# Log all output to files
+LOGFILE=$HOME/devstack.log
+SCREEN_LOGDIR=$HOME/logs
+
+VOLUME_BACKING_FILE_SIZE=20G
+END
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Note: Update PUBLIC_INTERFACE and other parameters as appropriate for your
+system.
+.sp
+More devstack configuration information can be found at
+\fI\%http://docs.openstack.org/developer/devstack/configuration.html\fP
+.sp
+More neutron configuration information can be found at
+\fI\%http://docs.openstack.org/developer/devstack/guides/neutron.html\fP
+.sp
+Optionally, you can enable ceilometer in devstack. If ceilometer is enabled,
+magnum will periodically send metrics to ceilometer. If you need this feature,
+add the following line to your \fIlocal.conf\fP file:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+enable_plugin ceilometer git://git.openstack.org/openstack/ceilometer
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Create a local.sh to automatically make necessary networking changes during
+the devstack deployment process. This will allow bays spawned by magnum to
+access the internet through PUBLIC_INTERFACE:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cat > local.sh << \(aqEND_LOCAL_SH\(aq
+#!/bin/sh
+ROUTE_TO_INTERNET=$(ip route get 8.8.8.8)
+OBOUND_DEV=$(echo ${ROUTE_TO_INTERNET#*dev} | awk \(aq{print $1}\(aq)
+sudo iptables \-t nat \-A POSTROUTING \-o $OBOUND_DEV \-j MASQUERADE
+END_LOCAL_SH
+chmod 755 local.sh
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Run devstack:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+\&./stack.sh
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Note: If using the m\-1 tag or tarball, please use the documentation shipped
+with the milestone as the current master instructions are slightly
+incompatible.
+.sp
+Prepare your session to be able to use the various openstack clients including
+magnum, neutron, and glance. Create a new shell, and source the devstack openrc
+script:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+source ~/devstack/openrc admin admin
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Magnum has been tested with the Fedora Atomic micro\-OS and CoreOS. Magnum will
+likely work with other micro\-OS platforms, but each requires individual
+support in the heat template.
+.sp
+Store the Fedora Atomic micro\-OS in glance. (The steps for updating Fedora
+Atomic images are a bit detailed. Fortunately one of the core developers has
+made Atomic images available at \fI\%https://fedorapeople.org/groups/magnum\fP):
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cd ~
+wget https://fedorapeople.org/groups/magnum/fedora\-21\-atomic\-5.qcow2
+glance image\-create \-\-name fedora\-21\-atomic\-5 \e
+                    \-\-is\-public True \e
+                    \-\-disk\-format qcow2 \e
+                    \-\-property os_distro=\(aqfedora\-atomic\(aq\e
+                    \-\-container\-format bare < fedora\-21\-atomic\-5.qcow2
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Create a keypair for use with the baymodel:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+test \-f ~/.ssh/id_rsa.pub || ssh\-keygen \-t rsa \-N "" \-f ~/.ssh/id_rsa
+nova keypair\-add \-\-pub\-key ~/.ssh/id_rsa.pub testkey
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Create a database in MySQL for magnum:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+mysql \-h 127.0.0.1 \-u root \-ppassword mysql <<EOF
+CREATE DATABASE IF NOT EXISTS magnum DEFAULT CHARACTER SET utf8;
+GRANT ALL PRIVILEGES ON magnum.* TO
+    \(aqroot\(aq@\(aq%\(aq IDENTIFIED BY \(aqpassword\(aq
+EOF
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Clone and install magnum:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cd ~
+git clone https://git.openstack.org/openstack/magnum
+cd magnum
+sudo pip install \-e .
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Configure magnum:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+# create the magnum conf directory
+sudo mkdir \-p /etc/magnum
+
+# copy sample config and modify it as necessary
+sudo cp etc/magnum/magnum.conf.sample /etc/magnum/magnum.conf
+
+# copy policy.json
+sudo cp etc/magnum/policy.json /etc/magnum/policy.json
+
+# enable debugging output
+sudo sed \-i "s/#debug\es*=.*/debug=true/" /etc/magnum/magnum.conf
+
+# set RabbitMQ userid
+sudo sed \-i "s/#rabbit_userid\es*=.*/rabbit_userid=stackrabbit/" \e
+         /etc/magnum/magnum.conf
+
+# set RabbitMQ password
+sudo sed \-i "s/#rabbit_password\es*=.*/rabbit_password=password/" \e
+         /etc/magnum/magnum.conf
+
+# set SQLAlchemy connection string to connect to MySQL
+sudo sed \-i "s/#connection\es*=.*/connection=mysql:\e/\e/root:password@localhost\e/magnum/" \e
+         /etc/magnum/magnum.conf
+
+# set Keystone account username
+sudo sed \-i "s/#admin_user\es*=.*/admin_user=admin/" \e
+         /etc/magnum/magnum.conf
+
+# set Keystone account password
+sudo sed \-i "s/#admin_password\es*=.*/admin_password=password/" \e
+         /etc/magnum/magnum.conf
+
+# set admin Identity API endpoint
+sudo sed \-i "s/#identity_uri\es*=.*/identity_uri=http:\e/\e/127.0.0.1:35357/" \e
+         /etc/magnum/magnum.conf
+
+# set public Identity API endpoint
+sudo sed \-i "s/#auth_uri\es*=.*/auth_uri=http:\e/\e/127.0.0.1:5000\e/v2.0/" \e
+         /etc/magnum/magnum.conf
+
+# set notification_driver (if using ceilometer)
+sudo sed \-i "s/#notification_driver\es*=.*/notification_driver=messaging/" \e
+         /etc/magnum/magnum.conf
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Clone and install the magnum client:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cd ~
+git clone https://git.openstack.org/openstack/python\-magnumclient
+cd python\-magnumclient
+sudo pip install \-e .
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Configure the database for use with magnum. Please note that DB migration
+does not work for SQLite backend. The SQLite database does not
+have any support for the ALTER statement needed by relational schema
+based migration tools. Hence DB Migration will not work for SQLite
+backend:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum\-db\-manage upgrade
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Configure the keystone endpoint:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+keystone service\-create \-\-name=magnum \e
+                        \-\-type=container \e
+                        \-\-description="magnum Container Service"
+keystone endpoint\-create \-\-service=magnum \e
+                         \-\-publicurl=http://127.0.0.1:9511/v1 \e
+                         \-\-internalurl=http://127.0.0.1:9511/v1 \e
+                         \-\-adminurl=http://127.0.0.1:9511/v1 \e
+                         \-\-region RegionOne
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Start the API service in a new screen:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum\-api
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Start the conductor service in a new screen:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum\-conductor
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Magnum should now be up and running!
+.sp
+Further details on utilizing magnum and deploying containers can be found in
+the guide dev\-quickstart\&.
+.SS Building and updating Fedora Atomic image
+.sp
+For Magnum development, we use a Fedora Atomic image prebuilt with a certain
+version of Docker, Kubernetes, etcd and Flannel.  This document details
+instructions for building the image update it to incorporate your own changes.
+.sp
+The basic steps are:
+.INDENT 0.0
+.IP 1. 3
+Choose the packages and build a package repo.
+.IP 2. 3
+Run a Docker container with Fedora 21 and build the rpm\-ostree repo.
+.IP 3. 3
+Create the new glance image from this Docker container.
+.IP 4. 3
+Alternatively, update an existing container from this rpm\-ostree repo.
+.UNINDENT
+.sp
+This document was tested with Fedora 21.  This should also work for
+Fedora 22 or other version with minor adjustment, and the document will be
+updated when they are tested.
+.SS Create the package repo
+.sp
+Find the package version that you want from:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+https://kojipkgs.fedoraproject.org/packages/<packagename>
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+This URL does not contain a package name, so you will provide the package name
+in the URL. For our case, we will use the three packages named \(aqkubernetes\(aq,
+\(aqetcd\(aq, and \(aqflannel\(aq.
+.sp
+For example:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+https://kojipkgs.fedoraproject.org/packages/kubernetes/0.20.0/0.3.git835eded.fc23/src/kubernetes\-0.20.0\-0.3.git835eded.fc23.src.rpm
+https://kojipkgs.fedoraproject.org/packages/etcd/2.0.13/2.fc23/src/etcd\-2.0.13\-2.fc23.src.rpm
+https://kojipkgs.fedoraproject.org/packages/flannel/0.5.0/1.fc23/src/flannel\-0.5.0\-1.fc23.src.rpm
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Next we build a package repo for these particular packages.  We use an
+automated package builder from:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+https://copr.fedoraproject.org/coprs
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+If you don\(aqt have an account, you can create one on:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+http://fedoraproject.org
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Once you log into Fedora copr via \fI\%https://copr.fedoraproject.org\fP, follow these
+steps:
+.INDENT 0.0
+.IP \(bu 2
+Click on "Add a new project" and fill in the necessary information.
+.IP \(bu 2
+Check the box for fedora\-21\-x86_64.
+.IP \(bu 2
+In the box "Initial packages to build", refer the kojipkgs site mentioned
+above.  Cut and paste the links for the desired src.rpm package.
+.IP \(bu 2
+Click build.
+.UNINDENT
+.sp
+The build may take some time depending on how busy the system is.
+.sp
+When the build completes successfully, go to the Overview tab and look under
+the column for "Yum repo". Find the link for a repo file to point to your
+newly built package in copr. Save the text from this link to use later.
+.SS Build and host rpm\-ostree repo
+.sp
+You will need a server with Docker installed.
+Download this build configuration:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+git clone https://github.com/jasonbrooks/byo\-atomic.git
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Make sure httpd is not running on your server since we need to map port 80
+to apache that will run in the Docker instance.  If port 80 is already in use,
+we will get an error when starting the Docker instance indicating that the
+address is already in use.
+.sp
+Verify that port tcp/80 is vacant by running this command:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo netstat \-antp | grep :80
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+The output should show no process on port 80.  For example, if apache is
+using port 80, you would see something like:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+tcp6   0    0 :::80     :::*      LISTEN  26981/apache2
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+In the Dockerfile, we download the fedora 21 image and set up the environment.
+If you are running on Ubuntu, the Dockerfile does need a minor workaround for
+the httpd logs directory. Edit the Dockerfile and in the line with mkdir,
+insert a command for "mkdir /etc/httpd/logs" as follows:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+mkdir /etc/httpd/logs && mkdir \-p /srv/rpm\-ostree/repo && cd /srv/rpm\-ostree/ && ostree \-\-repo=repo init \-\-mode=archive\-z2
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Build a Docker container image to be used for hosting the rpm\-ostree repo:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker build \-\-rm \-t $USER/atomicrepo byo\-atomic/.
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+where $USER is the user logged in.
+.sp
+When the build completes, you can see the image by running:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker images
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Start a container using the new Docker image. This will start apache in the
+new container with tcp/80 mapped to the host:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker run \-\-privileged \-d \-p 80:80 \-\-name atomicrepo $USER/atomicrepo
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Then log into this Docker container:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo docker exec \-it atomicrepo bash
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Once inside the Docker container, run the commands:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+cd fedora\-atomic
+git checkout f21
+nscd
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Edit the file fedora\-atomic\-docker\-host.json to add the repo pointing to the
+copr package repo.  Update the line "repos" as follows:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+"repos": ["fedora\-21" , "my\-copr\-repo"],
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+You can rename "my\-copr\-repo" as needed, but make sure to use the same name
+in the two steps following.  From the link on the copr site above, save the
+content for the repo pointer in a file named "my\-copr\-repo.repo" in the same
+directory, then make the following changes in the file.
+.sp
+Rename the first line as:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+[my\-copr\-repo]
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+And modify this flag:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+gpgcheck=0
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Then build the rpm\-ostree:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+rpm\-ostree compose tree \-\-repo=/srv/rpm\-ostree/repo fedora\-atomic\-docker\-host.json
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+When this is completed, Apache should be running on the Docker container and
+serving the content of the new rpm\-ostree repo.  From outside the container,
+the repo can be accessed as:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+http://<ip>/repo
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Create the new image
+.sp
+From within the Docker container where the rpm\-ostree repo has been built,
+install additional tools:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+yum install \-y rpm\-ostree\-toolbox nss\-altfiles yum\-plugin\-protectbase
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Create a new glance image:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+export LIBGUESTFS_BACKEND=direct
+rpm\-ostree\-toolbox create\-vm\-disk /srv/rpm\-ostree/repo fedora\-atomic\-host fedora\-atomic/f21/x86_64/docker\-host my\-new\-f21\-atomic.qcow2
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+The new image my\-new\-f21\-atomic.qcow2 is in the current directory.
+.SS Update an existing Fedora Atomic server
+.sp
+You may update an existing Fedora Atomic server to derive a new one.
+If you have a nova instance created from an existing Fedora Atomic glance
+image, you may update it from the rpm\-ostree repo above. On this server,
+edit this file as root:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo vi /etc/ostree/remotes.d/fedora\-atomic.conf
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Add the content (substitute the <ip> for your Docker instance):
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+[remote "fedora\-atomic\-host"]
+url=http://<ip>/repo
+branches=fedora\-atomic/21/x86_64/docker\-host;
+gpg\-verify=false
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Run the command:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo rpm\-ostree upgrade
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+When the upgrade is completed, reboot to switch to the new version:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo systemctl reboot
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Once you have the modified server, you may snapshot it to create a new glance
+image from it, and use that new glance image for subsequent new Magnum bays.
+Note however that because of the way Atomic manages backup, this approach will
+bloat the image size.
+.SS Using Kubernetes external load balancer feature
+.sp
+In a Kubernetes cluster, all masters and minions are connected to a private
+Neutron subnet, which in turn is connected by a router to the public network.
+This allows the nodes to access each other and the external internet.
+.sp
+All Kubernetes pods and services created in the cluster are connected to a
+private container network which by default is Flannel, an overlay network that
+runs on top of the Neutron private subnet.  The pods and services are assigned
+IP addresses from this container network and they can access each other and
+the external internet.  However, these IP addresses are not accessible from an
+external network.
+.sp
+To publish a service endpoint externally so that the service can be accessed
+from the external network, Kubernetes provides the external load balancer
+feature.  This is done by simply specifying the attribute "type: LoadBalancer"
+in the service manifest.  When the service is created, Kubernetes will add an
+external load balancer in front of the service so that the service will have
+an external IP address in addition to the internal IP address on the container
+network.  The service endpoint can then be accessed with this external IP
+address.  Refer to the Kubernetes guide for more details:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+http://kubernetes.io/v1.0/docs/user\-guide/services.html#external\-services
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+A Kubernetes cluster deployed by Magnum will have all the necessary
+configuration required for the external load balancer.  This document describes
+how to use this feature.
+.SS Steps for the cluster administrator
+.sp
+Because the Kubernetes master needs to interface with OpenStack to create and
+manage the Neutron load balancer, we need to provide a credential for
+Kubernetes to use.
+.sp
+In the current implementation, the cluster administrator needs to manually
+perform this step.  We are looking into several ways to let Magnum automate
+this step in a secure manner.  This means that after the Kubernetes cluster is
+initially deployed, the load balancer support is disabled.  If the
+administrator does not want to enable this feature, no further action is
+required.  All the services will be created normally; services that specify the
+load balancer will also be created successfully, but a load balancer will not
+be created.
+.sp
+To enable the load balancer, log into each master node of your bay and
+perform the following steps:
+.INDENT 0.0
+.IP 1. 3
+Configure kube\-apiserver:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo vi /etc/kubernetes/apiserver
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Comment out the line:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+#KUBE_API_ARGS="\-\-runtime_config=api/all=true"
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Uncomment the line:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+KUBE_API_ARGS="\-\-runtime_config=api/all=true \-\-cloud_config=/etc/sysconfig/kube_openstack_config \-\-cloud_provider=openstack"""
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.IP 2. 3
+Configure kube\-controller\-manager:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo vi /etc/kubernetes/controller\-manager
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Uncomment the line:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+KUBE_CONTROLLER_MANAGER_ARGS="\-\-cloud_config=/etc/sysconfig/kube_openstack_config \-\-cloud_provider=openstack"
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.IP 3. 3
+Enter OpenStack user credential:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo vi /etc/sysconfig/kube_openstack_config
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+The username and tenant\-name entries have been filled in with the
+Keystone values of the user who created the bay.  Enter the password
+of this user on the entry for password:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+password=ChangeMe
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.IP 4. 3
+Restart Kubernetes services:
+.INDENT 3.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sudo service kube\-apiserver restart
+sudo service kube\-controller\-manager restart
+service kube\-apiserver status
+service kube\-controller\-manager status
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+This only needs to be done once.  The steps can be reversed to disable the
+load balancer feature. Before deleting the Kubernetes cluster, make sure to
+delete all the services that created load balancers. Because the Neutron
+objects created by Kubernetes are not managed by Heat, they will not be
+deleted by Heat and this will cause the bay\-delete operation to fail. If this
+occurs, delete the neutron objects manually (lb\-pool, lb\-vip, lb\-member,
+lb\-healthmonitor) and then run bay\-delete again.
+.SS Steps for the users
+.sp
+For the user, publishing the service endpoint externally involves the following
+2 steps:
+.INDENT 0.0
+.IP 1. 3
+Specify "type: LoadBalancer" in the service manifest
+.IP 2. 3
+After the service is created, associate a floating IP with the VIP of the
+load balancer pool.
+.UNINDENT
+.sp
+The following example illustrates how to create an external endpoint for
+a pod running nginx.
+.sp
+Create a file (e.g nginx.yaml) describing a pod running nginx:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+   app: nginx
+spec:
+  containers:
+  \- name: nginx
+    image: nginx
+    ports:
+    \- containerPort: 80
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Create a file (e.g nginx\-service.yaml) describing a service for the nginx pod:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginxservice
+  labels:
+    app: nginx
+spec:
+  ports:
+  \- port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: nginx
+  type: LoadBalancer
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Assuming that a Kubernetes bay named k8sbayv1 has been created, deploy the pod
+and service by the commands:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum pod\-create \-\-manifest nginx.yaml \-\-bay k8sbayv1
+
+magnum coe\-service\-create \-\-manifest nginx\-service.yaml \-\-bay k8sbayv1
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+For more details on verifying the load balancer in OpenStack, refer to the
+following section on how it works.
+.sp
+Next, associate a floating IP to the load balancer.  This can be done easily
+on Horizon by navigating to:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+Compute \-> Access & Security \-> Floating IPs
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Click on "Allocate IP To Project" and then on "Associate" for the new floating
+IP.
+.sp
+Alternatively, associating a floating IP can be done on the command line by
+allocating a floating IP, finding the port of the VIP, and associating the
+floating IP to the port.
+The commands shown below are for illustration purpose and assume
+that there is only one service with load balancer running in the bay and
+no other load balancers exist except for those created for the cluster.
+.sp
+First create a floating IP on the public network:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+neutron floatingip\-create public
+
+Created a new floatingip:
+
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| Field               | Value                                |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| fixed_ip_address    |                                      |
+| floating_ip_address | 172.24.4.78                          |
+| floating_network_id | 4808eacb\-e1a0\-40aa\-97b6\-ecb745af2a4d |
+| id                  | b170eb7a\-41d0\-4c00\-9207\-18ad1c30fecf |
+| port_id             |                                      |
+| router_id           |                                      |
+| status              | DOWN                                 |
+| tenant_id           | 012722667dc64de6bf161556f49b8a62     |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Note the floating IP 172.24.4.78 that has been allocated.  The ID for this
+floating IP is shown above, but it can also be queried by:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+FLOATING_ID=$(neutron floatingip\-list | grep "172.24.4.78" | awk \(aq{print $2}\(aq)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Next find the VIP for the load balancer:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+VIP_ID=$(neutron lb\-vip\-list | grep TCP | grep \-v pool | awk \(aq{print $2}\(aq)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Find the port for this VIP:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+PORT_ID=$(neutron lb\-vip\-show $VIP_ID | grep port_id | awk \(aq{print $4}\(aq)
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Finally associate the floating IP with the port of the VIP:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+neutron floatingip\-associate $FLOATING_ID $PORT_ID
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+The endpoint for nginx can now be accessed at this floating IP:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+http://172.24.4.78:80
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+NOTE: it is not necessary to indicate port :80 here but it is shown to
+correlate with the port that was specified in the service manifest.
+.SS How it works
+.sp
+Kubernetes is designed to work with different Clouds such as Google Compute
+Engine (GCE), Amazon Web Services (AWS), and OpenStack;  therefore, different
+load balancers need to be created on the particular Cloud for the services.
+This is done through a plugin for each Cloud and the OpenStack plugin was
+developed by Angus Lees:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+https://github.com/kubernetes/kubernetes/blob/release\-1.0/pkg/cloudprovider/openstack/openstack.go
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+When the Kubernetes components kube\-apiserver and kube\-controller\-manager start
+up, they will use the credential provided to authenticate a client
+to interface with OpenStack.
+.sp
+When a service with load balancer is created, the plugin code will interface
+with Neutron in this sequence:
+.INDENT 0.0
+.IP 1. 3
+Create lb\-pool for the Kubernetes service
+.IP 2. 3
+Create lb\-member for the minions
+.IP 3. 3
+Create lb\-healthmonitor
+.IP 4. 3
+Create lb\-vip on the private network of the Kubernetes cluster
+.UNINDENT
+.sp
+These Neutron objects can be verified as follows.  For the load balancer pool:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+neutron lb\-pool\-list
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+| id                                   | name                                         | provider | lb_method   | protocol | admin_state_up | status |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+| 241357b3\-2a8f\-442e\-b534\-bde7cd6ba7e4 | a1f03e40f634011e59c9efa163eae8ab             | haproxy  | ROUND_ROBIN | TCP      | True           | ACTIVE |
+| 82b39251\-1455\-4eb6\-a81e\-802b54c2df29 | k8sbayv1\-iypacicrskib\-api_pool\-fydshw7uvr7h  | haproxy  | ROUND_ROBIN | HTTP     | True           | ACTIVE |
+| e59ea983\-c6e8\-4cec\-975d\-89ade6b59e50 | k8sbayv1\-iypacicrskib\-etcd_pool\-qbpo43ew2m3x | haproxy  | ROUND_ROBIN | HTTP     | True           | ACTIVE |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Note that 2 load balancers already exist to implement high availability for the
+cluster (api and ectd). The new load balancer for the Kubernetes service uses
+the TCP protocol and has a name assigned by Kubernetes.
+.sp
+For the members of the pool:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+neutron lb\-member\-list
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+| id                                   | address  | protocol_port | weight | admin_state_up | status |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+| 9ab7dcd7\-6e10\-4d9f\-ba66\-861f4d4d627c | 10.0.0.5 |          8080 |      1 | True           | ACTIVE |
+| b179c1ad\-456d\-44b2\-bf83\-9cdc127c2b27 | 10.0.0.5 |          2379 |      1 | True           | ACTIVE |
+| f222b60e\-e4a9\-4767\-bc44\-ffa66ec22afe | 10.0.0.6 |         31157 |      1 | True           | ACTIVE |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Again, 2 members already exist for high availability and they serve the master
+node at 10.0.0.5. The new member serves the minion at 10.0.0.6, which hosts the
+Kubernetes service.
+.sp
+For the monitor of the pool:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+neutron lb\-healthmonitor\-list
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| id                                   | type | admin_state_up |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| 381d3d35\-7912\-40da\-9dc9\-b2322d5dda47 | TCP  | True           |
+| 67f2ae8f\-ffc6\-4f86\-ba5f\-1a135f4af85c | TCP  | True           |
+| d55ff0f3\-9149\-44e7\-9b52\-2e055c27d1d3 | TCP  | True           |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+For the VIP of the pool:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+neutron lb\-vip\-list
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+| id                                   | name                             | address  | protocol | admin_state_up | status |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+| 9ae2ebfb\-b409\-4167\-9583\-4a3588d2ff42 | api_pool.vip                     | 10.0.0.3 | HTTP     | True           | ACTIVE |
+| c318aec6\-8b7b\-485c\-a419\-1285a7561152 | a1f03e40f634011e59c9efa163eae8ab | 10.0.0.7 | TCP      | True           | ACTIVE |
+| fc62cf40\-46ad\-47bd\-aa1e\-48339b95b011 | etcd_pool.vip                    | 10.0.0.4 | HTTP     | True           | ACTIVE |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Note that the VIP is created on the private network of the cluster;  therefore
+it has an internal IP address of 10.0.0.7.  This address is also associated as
+the "external address" of the Kubernetes service.  You can verify in Kubernetes
+by running the kubectl command:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+kubectl get services
+NAME           LABELS                                    SELECTOR    IP(S)            PORT(S)
+kubernetes     component=apiserver,provider=kubernetes   <none>      10.254.0.1       443/TCP
+nginxservice   app=nginx                                 app=nginx   10.254.122.191   80/TCP
+                                                                     10.0.0.7
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+On GCE, the networking implementation gives the load balancer an external
+address automatically. On OpenStack, we need to take the additional step of
+associating a floating IP to the load balancer.
+.SS Transport Layer Security
+.sp
+Magnum uses TLS to secure communication between a Bay\(aqs services and the
+outside world. This includes not only Magnum itself, but also the end\-user
+when they choose to use native client libraries to interact with the Bay.
+Magnum also uses TLS certificates for client authentication, which means each
+client needs a valid certificate to communicate with a Bay.
+.sp
+TLS is a complex subject, and many guides on it exist already. This guide will
+not attempt to fully describe TLS, only the necessary pieces to get a client
+set up to talk to a Bay with TLS. A more indepth guide on TLS can be found in
+the \fI\%OpenSSL Cookbook\fP
+by Ivan Ristić.
+.SS Deploy a secure bay
+.sp
+Magnum supports secure communication between the Magnum service and the
+Kubernetes service using TLS. This document explains how to use this feature.
+.sp
+Below is the detailed step for deploying a secure bay and using kubectl to
+run Kubernetes commands that uses SSL certificates to communicate with
+Kubernetes services running on secure bay.
+.sp
+Create a baymodel, by default TLS is enabled in Magnum:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum baymodel\-create \-\-name secure\-kubernetes \e
+                       \-\-keypair\-id default \e
+                       \-\-external\-network\-id public \e
+                       \-\-image\-id fedora\-21\-atomic\-5 \e
+                       \-\-flavor\-id m1.small \e
+                       \-\-docker\-volume\-size 1 \e
+                       \-\-coe kubernetes \e
+                       \-\-network\-driver flannel
+
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| Property            | Value                                |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| http_proxy          | None                                 |
+| updated_at          | None                                 |
+| master_flavor_id    | None                                 |
+| fixed_network       | None                                 |
+| uuid                | 668a5e97\-ba92\-4b84\-bdc3\-e2388e0462ea |
+| no_proxy            | None                                 |
+| https_proxy         | None                                 |
+| tls_disabled        | False                                |
+| keypair_id          | default                              |
+| public              | False                                |
+| labels              | {}                                   |
+| docker_volume_size  | 1                                    |
+| external_network_id | public                               |
+| cluster_distro      | fedora\-atomic                        |
+| image_id            | fedora\-21\-atomic\-5                   |
+| registry_enabled    | False                                |
+| apiserver_port      | None                                 |
+| name                | secure\-kubernetes                    |
+| created_at          | 2015\-10\-08T05:05:10+00:00            |
+| network_driver      | flannel                              |
+| ssh_authorized_key  | None                                 |
+| coe                 | kubernetes                           |
+| flavor_id           | m1.small                             |
+| dns_nameserver      | 8.8.8.8                              |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+To disable TLS in magnum use option \(aq\-\-tls\-disabled\(aq. Please note it is not
+recommended to disable TLS due to security reasons.
+.sp
+Now create a bay. Use the baymodel name as a template for bay creation:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-create \-\-name secure\-k8sbay \e
+                  \-\-baymodel secure\-kubernetes \e
+                  \-\-node\-count 1
+
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| Property           | Value                                                      |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| status             | None                                                       |
+| uuid               | 04952c60\-a338\-437f\-a7e7\-d016d1d00e65                       |
+| status_reason      | None                                                       |
+| created_at         | 2015\-10\-08T04:19:14+00:00                                  |
+| updated_at         | None                                                       |
+| bay_create_timeout | 0                                                          |
+| api_address        | None                                                       |
+| baymodel_id        | da2825a0\-6d09\-4208\-b39e\-b2db666f1118                       |
+| node_count         | 1                                                          |
+| node_addresses     | None                                                       |
+| master_count       | 1                                                          |
+| discovery_url      | https://discovery.etcd.io/3b7fb09733429d16679484673ba3bfd5 |
+| name               | secure\-k8sbay                                              |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Now run bay\-show command to get the IP of the bay host:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum bay\-show secure\-k8sbay
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| Property           | Value                                                      |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+| status             | CREATE_COMPLETE                                            |
+| uuid               | 04952c60\-a338\-437f\-a7e7\-d016d1d00e65                       |
+| status_reason      | Stack CREATE completed successfully                        |
+| created_at         | 2015\-10\-08T04:19:14+00:00                                  |
+| updated_at         | 2015\-10\-08T04:21:00+00:00                                  |
+| bay_create_timeout | 0                                                          |
+| api_address        | https://192.168.19.86:6443                                 |
+| baymodel_id        | da2825a0\-6d09\-4208\-b39e\-b2db666f1118                       |
+| node_count         | 1                                                          |
+| node_addresses     | [u\(aq192.168.19.88\(aq]                                         |
+| master_count       | 1                                                          |
+| discovery_url      | https://discovery.etcd.io/3b7fb09733429d16679484673ba3bfd5 |
+| name               | secure\-k8sbay                                              |
++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+You can see the api_address contains https in URL that denotes the Kubernetes
+services are configured securely with SSL certificates and now any
+communication to kube\-apiserver will be over https making it secure.
+.SS Generating a Client Key and Certificate Signing Request
+.sp
+The first step to setting up a client is to generate your personal private key.
+This is essentially a cryptographically generated string of bytes. It should be
+protected as a password. To generate an RSA key, you will use the \(aqgenrsa\(aq
+command of the \(aqopenssl\(aq tool.
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+openssl genrsa \-out client.key 4096
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+This command generates a 4096 byte RSA key at client.key.
+.sp
+Next, you will need to generate a certificate signing request (CSR). This will
+be used by Magnum to generate a signed certificate you will use to communicate
+with the Bay. It is used by the Bay to secure the connection and validate you
+are you who say you are.
+.sp
+To generate a CSR for client authentication, openssl requires a config file
+that specifies a few values. Below is a simple template, just fill in the \(aqCN\(aq
+value with your name and save it as client.conf
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ cat > client.conf << END
+[req]
+distinguished_name = req_distinguished_name
+req_extensions     = req_ext
+prompt = no
+[req_distinguished_name]
+CN = Your Name
+[req_ext]
+extendedKeyUsage = clientAuth
+END
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Once you have client.conf, you can run the openssl \(aqreq\(aq command to generate
+the CSR.
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+openssl req \-new \-days 365 \e
+    \-config client.conf \e
+    \-key client.key \e
+    \-out client.csr
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Now that you have your client CSR, you can use the Magnum CLI to send it off
+to Magnum to get it signed.
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum ca\-sign \-\-bay secure\-k8sbay \-\-csr client.csr > client.crt
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+The final piece you need to retrieve is the CA certificate for the bay. This
+is used by your native client to ensure you\(aqre only communicating with hosts
+that Magnum set up.
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+magnum ca\-show \-\-bay secure\-k8sbay > ca.crt
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+You need to get kubectl, a kubernetes CLI tool, to communicate with the bay
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+wget https://github.com/kubernetes/kubernetes/releases/download/v1.0.4/kubernetes.tar.gz
+tar \-xzvf kubernetes.tar.gz
+sudo cp \-a kubernetes/platforms/linux/amd64/kubectl /usr/bin/kubectl
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Now let\(aqs run some kubectl commands to check secure communication:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+KUBERNETES_URL=$(magnum bay\-show secure\-k8sbay |
+                 awk \(aq/ api_address /{print $4}\(aq)
+kubectl version \-\-certificate\-authority=ca.crt \e
+                \-\-client\-key=client.key \e
+                \-\-client\-certificate=client.crt \-s $KUBERNETES_URL
+
+Client Version: version.Info{Major:"1", Minor:"0", GitVersion:"v1.0.4", GitCommit:"65d28d5fd12345592405714c81cd03b9c41d41d9", GitTreeState:"clean"}
+Server Version: version.Info{Major:"1", Minor:"0", GitVersion:"v1.0.4", GitCommit:"65d28d5fd12345592405714c81cd03b9c41d41d9", GitTreeState:"clean"}
+
+kubectl create \-f redis\-master.yaml \-\-certificate\-authority=ca.crt \e
+                                    \-\-client\-key=client.key \e
+                                    \-\-client\-certificate=client.crt \-s $KUBERNETES_URL
+
+pods/test2
+
+kubectl get pods \-\-certificate\-authority=ca.crt \e
+                 \-\-client\-key=client.key \e
+                 \-\-client\-certificate=client.crt \-s $KUBERNETES_URL
+NAME           READY     STATUS    RESTARTS   AGE
+redis\-master   2/2       Running   0          1m
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Once you have all of these pieces, you can configure your native client. Below
+is an example for Docker.
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+docker \-H tcp://192.168.19.86:2376 \-\-tlsverify \e
+    \-\-tlscacert ca.crt \e
+    \-\-tlskey client.key \e
+    \-\-tlscert client.crt
+    info
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS Contributing
+.SS Heat Template Definitions
+.sp
+Heat Templates are what Magnum uses to generate a Bay. These various template
+definitions provide a mapping of Magnum object attributes to Heat templates
+parameters, along with Magnum consumable template outputs. The result of a
+Heat template should be a full Container Orchestration Environment.
+.SS Versioned Objects
+.sp
+Magnum uses the \fI\%oslo.versionedobjects library\fP to
+construct an object model that can be communicated via RPC. These objects have
+a version history and functionality to convert from one version to a previous
+version. This allows for 2 different levels of the code to still pass objects
+to each other, as in the case of rolling upgrades.
+.SS Object Version Testing
+.sp
+In order to ensure object versioning consistency is maintained,
+oslo.versionedobjects has a fixture to aid in testing object versioning.
+\fI\%oslo.versionedobjects.fixture.ObjectVersionChecker\fP
+generates fingerprints of each object, which is a combination of the current
+version number of the object, along with a hash of the RPC\-critical parts of
+the object (fields and remotable methods).
+.sp
+The tests hold a static mapping of the fingerprints of all objects. When an
+object is changed, the hash generated in the test will differ from that held in
+the static mapping. This will signal to the developer that the version of the
+object needs to be increased. Following this version increase, the fingerprint
+that is then generated by the test can be copied to the static mapping in the
+tests. This symbolizes that if the code change is approved, this is the new
+state of the object to compare against.
+.SS Object Change Example
+.sp
+The following example shows the unit test workflow when changing an object
+(Container was updated to hold a new \(aqfoo\(aq field):
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+tox \-e py27 magnum.tests.unit.objects.test_objects
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+This results in a unit test failure with the following output:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+testtools.matchers._impl.MismatchError: !=:
+reference = {\(aqContainer\(aq: \(aq1.0\-e12affbba5f8a748882a3ae98aced282\(aq}
+actual    = {\(aqContainer\(aq: \(aq1.0\-22b40e8eed0414561ca921906b189820\(aq}
+: Fields or remotable methods in some objects have changed. Make sure the versions of the objects has been bumped, and update the hashes in the static fingerprints tree (object_data). For more information, read http://docs.openstack.org/developer/magnum/objects.html.
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+This is an indication that me adding the \(aqfoo\(aq field to Container means I need
+to bump the version of Container, so I increase the version and add a comment
+saying what I changed in the new version:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+@base.MagnumObjectRegistry.register
+class Container(base.MagnumPersistentObject, base.MagnumObject,
+                base.MagnumObjectDictCompat):
+    # Version 1.0: Initial version
+    # Version 1.1: Added \(aqfoo\(aq field
+    VERSION = \(aq1.1\(aq
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Now that I have updated the version, I will run the tests again and let the
+test tell me the fingerprint that I now need to put in the static tree:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+testtools.matchers._impl.MismatchError: !=:
+reference = {\(aqContainer\(aq: \(aq1.0\-e12affbba5f8a748882a3ae98aced282\(aq}
+actual    = {\(aqContainer\(aq: \(aq1.1\-22b40e8eed0414561ca921906b189820\(aq}
+: Fields or remotable methods in some objects have changed. Make sure the versions of the objects has been bumped, and update the hashes in the static fingerprints tree (object_data). For more information, read http://docs.openstack.org/developer/magnum/objects.html.
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+I can now copy the new fingerprint needed
+(1.1\-22b40e8eed0414561ca921906b189820), to the object_data map within
+magnum/tests/unit/objects/test_objects.py:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+object_data = {
+    \(aqBay\(aq: \(aq1.0\-35edde13ad178e9419e7ea8b6d580bcd\(aq,
+    \(aqBayLock\(aq: \(aq1.0\-7d1eb08cf2070523bd210369c7a2e076\(aq,
+    \(aqBayModel\(aq: \(aq1.0\-06863f04ab4b98307e3d1b736d3137bf\(aq,
+    \(aqContainer\(aq: \(aq1.1\-22b40e8eed0414561ca921906b189820\(aq,
+    \(aqMyObj\(aq: \(aq1.0\-b43567e512438205e32f4e95ca616697\(aq,
+    \(aqNode\(aq: \(aq1.0\-30943e6e3387a2fae7490b57c4239a17\(aq,
+    \(aqPod\(aq: \(aq1.0\-69b579203c6d726be7878c606626e438\(aq,
+    \(aqReplicationController\(aq: \(aq1.0\-782b7deb9307b2807101541b7e58b8a2\(aq,
+    \(aqService\(aq: \(aq1.0\-d4b8c0f3a234aec35d273196e18f7ed1\(aq,
+    \(aqX509KeyPair\(aq: \(aq1.0\-fd008eba0fbc390e0e5da247bba4eedd\(aq,
+}
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Running the unit tests now shows no failure.
+.sp
+If I did not update the version, and rather just copied the new hash to the
+object_data map, the review would show the hash (but not the version) was
+updated in object_data. At that point, a reviewer should point this out, and
+mention that the object version needs to be updated.
+.sp
+If a remotable method were added/changed, the same process is followed, because
+this will also cause a hash change.
+.SH AUTHOR
+bughunter
+.SH COPYRIGHT
+2016, bughunter
+.\" Generated by docutils manpage writer.
+.

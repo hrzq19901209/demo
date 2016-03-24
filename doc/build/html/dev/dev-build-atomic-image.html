@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Building and updating Fedora Atomic image &mdash; bughunter 0.0.3.dev2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/logo.jpg"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="bughunter 0.0.3.dev2 documentation" href="../index.html"/>
+        <link rel="next" title="Using Kubernetes external load balancer feature" href="dev-kubernetes-load-balancer.html"/>
+        <link rel="prev" title="Manually Adding Magnum to DevStack" href="dev-manual-devstack.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> bughunter
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3.dev2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dev-quickstart.html">Developer Quick-Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-manual-devstack.html">Manually Adding Magnum to DevStack</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Building and updating Fedora Atomic image</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#create-the-package-repo">Create the package repo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-and-host-rpm-ostree-repo">Build and host rpm-ostree repo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#create-the-new-image">Create the new image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#update-an-existing-fedora-atomic-server">Update an existing Fedora Atomic server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dev-kubernetes-load-balancer.html">Using Kubernetes external load balancer feature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev-tls.html">Transport Layer Security</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heat-templates.html">Heat Template Definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../objects.html">Versioned Objects</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">bughunter</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Building and updating Fedora Atomic image</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/dev/dev-build-atomic-image.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="building-and-updating-fedora-atomic-image">
+<h1>Building and updating Fedora Atomic image<a class="headerlink" href="#building-and-updating-fedora-atomic-image" title="Permalink to this headline">¶</a></h1>
+<p>For Magnum development, we use a Fedora Atomic image prebuilt with a certain
+version of Docker, Kubernetes, etcd and Flannel.  This document details
+instructions for building the image update it to incorporate your own changes.</p>
+<p>The basic steps are:</p>
+<ol class="arabic simple">
+<li>Choose the packages and build a package repo.</li>
+<li>Run a Docker container with Fedora 21 and build the rpm-ostree repo.</li>
+<li>Create the new glance image from this Docker container.</li>
+<li>Alternatively, update an existing container from this rpm-ostree repo.</li>
+</ol>
+<p>This document was tested with Fedora 21.  This should also work for
+Fedora 22 or other version with minor adjustment, and the document will be
+updated when they are tested.</p>
+<div class="section" id="create-the-package-repo">
+<h2>Create the package repo<a class="headerlink" href="#create-the-package-repo" title="Permalink to this headline">¶</a></h2>
+<p>Find the package version that you want from:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>https://kojipkgs.fedoraproject.org/packages/&lt;packagename&gt;
+</pre></div>
+</div>
+<p>This URL does not contain a package name, so you will provide the package name
+in the URL. For our case, we will use the three packages named &#8216;kubernetes&#8217;,
+&#8216;etcd&#8217;, and &#8216;flannel&#8217;.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>https://kojipkgs.fedoraproject.org/packages/kubernetes/0.20.0/0.3.git835eded.fc23/src/kubernetes-0.20.0-0.3.git835eded.fc23.src.rpm
+https://kojipkgs.fedoraproject.org/packages/etcd/2.0.13/2.fc23/src/etcd-2.0.13-2.fc23.src.rpm
+https://kojipkgs.fedoraproject.org/packages/flannel/0.5.0/1.fc23/src/flannel-0.5.0-1.fc23.src.rpm
+</pre></div>
+</div>
+<p>Next we build a package repo for these particular packages.  We use an
+automated package builder from:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>https://copr.fedoraproject.org/coprs
+</pre></div>
+</div>
+<p>If you don&#8217;t have an account, you can create one on:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>http://fedoraproject.org
+</pre></div>
+</div>
+<p>Once you log into Fedora copr via <a class="reference external" href="https://copr.fedoraproject.org">https://copr.fedoraproject.org</a>, follow these
+steps:</p>
+<ul class="simple">
+<li>Click on &#8220;Add a new project&#8221; and fill in the necessary information.</li>
+<li>Check the box for fedora-21-x86_64.</li>
+<li>In the box &#8220;Initial packages to build&#8221;, refer the kojipkgs site mentioned
+above.  Cut and paste the links for the desired src.rpm package.</li>
+<li>Click build.</li>
+</ul>
+<p>The build may take some time depending on how busy the system is.</p>
+<p>When the build completes successfully, go to the Overview tab and look under
+the column for &#8220;Yum repo&#8221;. Find the link for a repo file to point to your
+newly built package in copr. Save the text from this link to use later.</p>
+</div>
+<div class="section" id="build-and-host-rpm-ostree-repo">
+<h2>Build and host rpm-ostree repo<a class="headerlink" href="#build-and-host-rpm-ostree-repo" title="Permalink to this headline">¶</a></h2>
+<p>You will need a server with Docker installed.
+Download this build configuration:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>git clone https://github.com/jasonbrooks/byo-atomic.git
+</pre></div>
+</div>
+<p>Make sure httpd is not running on your server since we need to map port 80
+to apache that will run in the Docker instance.  If port 80 is already in use,
+we will get an error when starting the Docker instance indicating that the
+address is already in use.</p>
+<p>Verify that port tcp/80 is vacant by running this command:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo netstat -antp | grep :80
+</pre></div>
+</div>
+<p>The output should show no process on port 80.  For example, if apache is
+using port 80, you would see something like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>tcp6   0    0 :::80     :::*      LISTEN  26981/apache2
+</pre></div>
+</div>
+<p>In the Dockerfile, we download the fedora 21 image and set up the environment.
+If you are running on Ubuntu, the Dockerfile does need a minor workaround for
+the httpd logs directory. Edit the Dockerfile and in the line with mkdir,
+insert a command for &#8220;mkdir /etc/httpd/logs&#8221; as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>mkdir /etc/httpd/logs &amp;&amp; mkdir -p /srv/rpm-ostree/repo &amp;&amp; cd /srv/rpm-ostree/ &amp;&amp; ostree --repo=repo init --mode=archive-z2
+</pre></div>
+</div>
+<p>Build a Docker container image to be used for hosting the rpm-ostree repo:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo docker build --rm -t $USER/atomicrepo byo-atomic/.
+</pre></div>
+</div>
+<p>where $USER is the user logged in.</p>
+<p>When the build completes, you can see the image by running:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo docker images
+</pre></div>
+</div>
+<p>Start a container using the new Docker image. This will start apache in the
+new container with tcp/80 mapped to the host:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo docker run --privileged -d -p 80:80 --name atomicrepo $USER/atomicrepo
+</pre></div>
+</div>
+<p>Then log into this Docker container:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo docker exec -it atomicrepo bash
+</pre></div>
+</div>
+<p>Once inside the Docker container, run the commands:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>cd fedora-atomic
+git checkout f21
+nscd
+</pre></div>
+</div>
+<p>Edit the file fedora-atomic-docker-host.json to add the repo pointing to the
+copr package repo.  Update the line &#8220;repos&#8221; as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>&quot;repos&quot;: [&quot;fedora-21&quot; , &quot;my-copr-repo&quot;],
+</pre></div>
+</div>
+<p>You can rename &#8220;my-copr-repo&#8221; as needed, but make sure to use the same name
+in the two steps following.  From the link on the copr site above, save the
+content for the repo pointer in a file named &#8220;my-copr-repo.repo&#8221; in the same
+directory, then make the following changes in the file.</p>
+<p>Rename the first line as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">my</span><span class="o">-</span><span class="n">copr</span><span class="o">-</span><span class="n">repo</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>And modify this flag:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">gpgcheck</span><span class="o">=</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>Then build the rpm-ostree:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>rpm-ostree compose tree --repo=/srv/rpm-ostree/repo fedora-atomic-docker-host.json
+</pre></div>
+</div>
+<p>When this is completed, Apache should be running on the Docker container and
+serving the content of the new rpm-ostree repo.  From outside the container,
+the repo can be accessed as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>http://&lt;ip&gt;/repo
+</pre></div>
+</div>
+</div>
+<div class="section" id="create-the-new-image">
+<h2>Create the new image<a class="headerlink" href="#create-the-new-image" title="Permalink to this headline">¶</a></h2>
+<p>From within the Docker container where the rpm-ostree repo has been built,
+install additional tools:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>yum install -y rpm-ostree-toolbox nss-altfiles yum-plugin-protectbase
+</pre></div>
+</div>
+<p>Create a new glance image:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>export LIBGUESTFS_BACKEND=direct
+rpm-ostree-toolbox create-vm-disk /srv/rpm-ostree/repo fedora-atomic-host fedora-atomic/f21/x86_64/docker-host my-new-f21-atomic.qcow2
+</pre></div>
+</div>
+<p>The new image my-new-f21-atomic.qcow2 is in the current directory.</p>
+</div>
+<div class="section" id="update-an-existing-fedora-atomic-server">
+<h2>Update an existing Fedora Atomic server<a class="headerlink" href="#update-an-existing-fedora-atomic-server" title="Permalink to this headline">¶</a></h2>
+<p>You may update an existing Fedora Atomic server to derive a new one.
+If you have a nova instance created from an existing Fedora Atomic glance
+image, you may update it from the rpm-ostree repo above. On this server,
+edit this file as root:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo vi /etc/ostree/remotes.d/fedora-atomic.conf
+</pre></div>
+</div>
+<p>Add the content (substitute the &lt;ip&gt; for your Docker instance):</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>[remote &quot;fedora-atomic-host&quot;]
+url=http://&lt;ip&gt;/repo
+branches=fedora-atomic/21/x86_64/docker-host;
+gpg-verify=false
+</pre></div>
+</div>
+<p>Run the command:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo rpm-ostree upgrade
+</pre></div>
+</div>
+<p>When the upgrade is completed, reboot to switch to the new version:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>sudo systemctl reboot
+</pre></div>
+</div>
+<p>Once you have the modified server, you may snapshot it to create a new glance
+image from it, and use that new glance image for subsequent new Magnum bays.
+Note however that because of the way Atomic manages backup, this approach will
+bloat the image size.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dev-kubernetes-load-balancer.html" class="btn btn-neutral float-right" title="Using Kubernetes external load balancer feature" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="dev-manual-devstack.html" class="btn btn-neutral" title="Manually Adding Magnum to DevStack" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, bughunter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.0.3.dev2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
